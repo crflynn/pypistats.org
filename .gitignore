@@ -1,0 +1,13 @@
+
+# credentials
+secret.*
+
+# mac osx
+.DS_Store
+
+# python bytecode
+*.py[cod]
+__pycache__
+
+# ignore
+ignore/
