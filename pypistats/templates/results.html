@@ -1,0 +1,12 @@
+<br>
+{% if packages %}
+    <ul>
+        {% for package in packages %}
+            <li>
+                <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    No results.
+{% endif %}

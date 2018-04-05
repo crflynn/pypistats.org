@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "36b3e674443d732f498a3aad93d143a2036297b5a24fbb282a7d48cd4dd83ad2"
+            "sha256": "f6427c3191e0004b972c855a3c74155aae118b1f0228e77b839ec4aa2c5a1141"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -88,6 +88,13 @@
             ],
             "version": "==2.3.2"
         },
+        "flask-wtf": {
+            "hashes": [
+                "sha256:d9a9e366b32dcbb98ef17228e76be15702cd2600675668bca23f63a7947fd5ac",
+                "sha256:5d14d55cfd35f613d99ee7cba0fc3fbbe63ba02f544d349158c14ca15561cc36"
+            ],
+            "version": "==0.14.2"
+        },
         "github-flask": {
             "hashes": [
                 "sha256:24600b720f698bac10667b76b136995ba7821d884e58b27e2a18ca0e4760c786"
@@ -110,10 +117,10 @@
         },
         "google-cloud-bigquery": {
             "hashes": [
-                "sha256:dfb9b2819d5731a42e7e5e003938be7ceda66b40c8ffb67a44073d45aca94b7a",
-                "sha256:6374a68ef232ae93b6bc364e62c37c9e2bc1fffdd017ea10ffe6a65393f40acb"
+                "sha256:0681c20dbc663ba382397fd4fc45bd6dba92339408ff399365e47303753f3084",
+                "sha256:f1c274342a364904de0656eeee519ba6c2cf165204b824ccb39370b72f242894"
             ],
-            "version": "==0.31.0"
+            "version": "==0.32.0"
         },
         "google-cloud-core": {
             "hashes": [
@@ -373,6 +380,12 @@
                 "sha256:c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c"
             ],
             "version": "==0.14.1"
+        },
+        "wtforms": {
+            "hashes": [
+                "sha256:ffdf10bd1fa565b8233380cb77a304cd36fd55c73023e91d4b803c96bc11d46f"
+            ],
+            "version": "==2.1"
         }
     },
     "develop": {}

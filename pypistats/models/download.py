@@ -55,6 +55,9 @@ class PythonMinorDownloadCount(Model):
         )
 
 
+RECENT_CATEGORIES = ["day", "week", "month"]
+
+
 class RecentDownloadCount(Model):
     """Recent day/week/month download counts."""
 
@@ -66,7 +69,7 @@ class RecentDownloadCount(Model):
     downloads = Column(db.BigInteger(), nullable=False)
 
     def __repr__(self):
-        return "<RecentDownloadCount {}".format(
+        return "<RecentDownloadCount {}>".format(
             f"{str(self.package)} - {str(self.category)}"
         )
 

@@ -1,0 +1,301 @@
+body {
+  background-color: #fff;
+  padding:0.4in;
+  font: 16px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color:#727272;
+  font-weight:400;
+  overflow:auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color:#222;
+  margin:0 0 20px;
+}
+
+p, ul, ol, table, pre, dl {
+  margin:0 0 20px;
+}
+
+h1, h2, h3 {
+  line-height:1.1;
+}
+
+h1 {
+  font-size:28px;
+}
+
+h2 {
+  color:#393939;
+}
+
+h3, h4, h5, h6 {
+  color:#494949;
+}
+
+a {
+  color:#39c;
+  text-decoration:none;
+}
+
+a:hover {
+  color:#069;
+}
+
+a small {
+  font-size:11px;
+  color:#777;
+  margin-top:-0.3em;
+  display:block;
+}
+
+a:hover small {
+  color:#777;
+}
+
+.wrapper {
+  /*width:860px;*/
+  /* margin:0 auto; */
+}
+
+blockquote {
+  border-left:1px solid #e5e5e5;
+  margin:0;
+  padding:0 0 0 20px;
+  font-style:italic;
+}
+
+code, pre {
+  font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal, Consolas, Liberation Mono, DejaVu Sans Mono, Courier New, monospace;
+  color:#333;
+  font-size:12px;
+}
+
+pre {
+  padding:5px 5px;
+  background: #f8f8f8;
+  border-radius:5px;
+  border:1px solid #e5e5e5;
+  overflow-x: auto;
+}
+
+table {
+  /* width:100%; */
+  border-collapse:collapse;
+}
+
+th, td {
+  text-align:left;
+  padding:2px 10px;
+  border-bottom:1px solid #e5e5e5;
+}
+
+dt {
+  color:#444;
+  font-weight:700;
+}
+
+th {
+  color:#444;
+}
+
+img {
+  max-width:100%;
+}
+
+header {
+  width:200px;
+  float:left;
+  position:fixed;
+  -webkit-font-smoothing:subpixel-antialiased;
+}
+
+header ul {
+  list-style:none;
+  height:40px;
+  padding:0;
+  background: #f4f4f4;
+  border-radius:5px;
+  border:1px solid #e0e0e0;
+  width:270px;
+}
+
+header li {
+  width:89px;
+  float:left;
+  border-right:1px solid #e0e0e0;
+  height:40px;
+}
+
+header li:first-child a {
+  border-radius:5px 0 0 5px;
+}
+
+header li:last-child a {
+  border-radius:0 5px 5px 0;
+}
+
+header ul a {
+  line-height:1;
+  font-size:11px;
+  color:#999;
+  display:block;
+  text-align:center;
+  padding-top:6px;
+  height:34px;
+}
+
+header ul a:hover {
+  color:#999;
+}
+
+header ul a:active {
+  background-color:#f0f0f0;
+}
+
+strong {
+  color:#222;
+  font-weight:700;
+}
+
+header ul li + li + li {
+  border-right:none;
+  width:89px;
+}
+
+header ul a strong {
+  font-size:14px;
+  display:block;
+  color:#222;
+}
+
+section {
+  /*float:left;
+  width:100%;*/
+  padding-left: 225px;
+  padding-bottom:20px;
+}
+
+small {
+  font-size:11px;
+}
+
+hr {
+  border:0;
+  background:#e5e5e5;
+  height:1px;
+  margin:0 0 20px;
+}
+
+footer {
+  width:200px;
+  float:left;
+  position:fixed;
+  bottom:20px;
+  -webkit-font-smoothing:subpixel-antialiased;
+}
+
+.btn {
+  background: #f5c56c;
+  background-image: -webkit-linear-gradient(top, #f5c56c, #b8842b);
+  background-image: -moz-linear-gradient(top, #f5c56c, #b8842b);
+  background-image: -ms-linear-gradient(top, #f5c56c, #b8842b);
+  background-image: -o-linear-gradient(top, #f5c56c, #b8842b);
+  background-image: linear-gradient(to bottom, #f5c56c, #b8842b);
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0px;
+  text-shadow: 1px 1px 3px #666666;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #e08c43;
+  background-image: -webkit-linear-gradient(top, #e08c43, #de9347);
+  background-image: -moz-linear-gradient(top, #e08c43, #de9347);
+  background-image: -ms-linear-gradient(top, #e08c43, #de9347);
+  background-image: -o-linear-gradient(top, #e08c43, #de9347);
+  background-image: linear-gradient(to bottom, #e08c43, #de9347);
+  text-decoration: none;
+}
+
+@media print, screen and (max-width: 960px) {
+
+  body {
+    padding:0.0in;
+  }
+
+  div.wrapper {
+    width:auto;
+    margin:0;
+  }
+
+  header, section, footer {
+    float:none;
+    position:static;
+    width:auto;
+  }
+
+  header {
+    padding-right:320px;
+  }
+
+  section {
+    border:1px solid #e5e5e5;
+    border-width:1px 0;
+    padding:20px 0;
+    margin:0 0 20px;
+  }
+
+  header a small {
+    display:inline;
+  }
+
+  header ul {
+    position:absolute;
+    right:50px;
+    top:52px;
+  }
+}
+
+@media print, screen and (max-width: 720px) {
+  body {
+    word-wrap:break-word;
+  }
+
+  header {
+    padding:0;
+  }
+
+  header ul, header p.view {
+    position:static;
+  }
+
+  pre, code {
+    word-wrap:normal;
+  }
+}
+
+@media print, screen and (max-width: 480px) {
+  body {
+    padding:0.0in;
+  }
+
+  header ul {
+    width:99%;
+  }
+
+  header li, header ul li + li + li {
+    width:33%;
+  }
+}
+
+@media print {
+  body {
+    font-size:12pt;
+    color:#444;
+  }
+}

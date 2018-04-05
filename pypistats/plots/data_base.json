@@ -1,0 +1,33 @@
+{"data": [
+  {
+    "x": [
+      "2017-05-01",
+      "2017-05-02",
+      "2017-05-03"
+    ],
+    "y": [
+      "345234",
+      "123123",
+      "456344"
+    ],
+    "name": "Retention",
+    "type": "scatter",
+    "mode": "lines+markers",
+    "connectgaps": true,
+    "marker": {
+      "color": "rgba(61,133,198,1)",
+      "symbol": "circle",
+      "line": {
+        "color": "#444",
+        "width": 1
+      }
+    },
+    "line": {
+      "color": "rgba(61,133,198,1)",
+      "shape": "linear",
+      "smoothing": 1,
+      "width": 2
+    }
+  }
+]
+}

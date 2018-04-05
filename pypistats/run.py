@@ -5,4 +5,5 @@ from pypistats.settings import ProdConfig
 from pypistats.settings import TestConfig
 
 
+# change this for migrations
 app = create_app(DevConfig)

@@ -247,9 +247,9 @@ def get_query(date):
     SELECT
       package,
       'python_major' AS category_label,
-      SPLIT(python_version, '.')[
+      cast(SPLIT(python_version, '.')[
     OFFSET
-      (0)] AS category,
+      (0)] as string) AS category,
       COUNT(*) AS downloads
     FROM
       dls
@@ -262,11 +262,11 @@ def get_query(date):
     SELECT
       package,
       'python_minor' AS category_label,
-      CONCAT(SPLIT(python_version, '.')[
+      cast(CONCAT(SPLIT(python_version, '.')[
       OFFSET
         (0)],'.',SPLIT(python_version, '.')[
       OFFSET
-        (1)]) AS category,
+        (1)]) as string) AS category,
       COUNT(*) AS downloads
     FROM
       dls

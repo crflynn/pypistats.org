@@ -36,7 +36,7 @@ def login():
 def logout():
     """Logout."""
     session.pop('user_id', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('general.index'))
 
 
 @blueprint.route('/github-callback')

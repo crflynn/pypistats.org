@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+    <head>
+        <!-- <script type="text/javascript"> // var host = "example.com"; // if ((host == window.location.host) && (window.location.protocol != "https:")) // window.location.protocol = "https"; </script> -->
+        <link rel="stylesheet" href="/static/style.css">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+        <meta name="viewport" content="width=device-width">
+        <!--[if lt IE 9]> <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+        <!-- ****** faviconit.com favicons ****** -->
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <!-- <link rel="shortcut icon" href="/favicon.ico"> -->
+        <link rel="icon" sizes="16x16 32x32 64x64" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="196x196" href="{{ url_for('static', filename='favicon-192.png') }}">
+        <link rel="icon" type="image/png" sizes="160x160" href="{{ url_for('static', filename='favicon-160.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicon-96.png') }}">
+        <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='favicon-64.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16.png') }}">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon-57.png') }}">
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename='favicon-114.png') }}">
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='favicon-72.png') }}">
+        <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename='favicon-144.png') }}">
+        <link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static', filename='favicon-60.png') }}">
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename='favicon-120.png') }}">
+        <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='favicon-76.png') }}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename='favicon-152.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon-180.png') }}">
+        <meta name="msapplication-TileColor" content="#FFFFFF">
+        <meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicon-144.png') }}">
+        <meta name="msapplication-config" content="{{ url_for('static', filename='browserconfig.xml') }}">
+        <!-- ****** faviconit.com favicons ****** -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.0.0/anchor.min.js" type="text/javascript"></script>
+        <!-- Place this tag in your head or just before your close body tag. -->
+        {% block plot %}{% endblock %}
+        {% block auth %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <header>
+
+                <h1>PyPI Stats</h1>
+                <p>
+                    <a href="{{ url_for('general.index') }}">Home</a>
+                    <br>
+                    <br>
+                    <a href="{{ url_for('general.package', package='__all__') }}">__all__</a>
+                    <br>
+                    <a href="{{ url_for('general.top') }}">Top</a>
+                    <br>
+                    <br>
+                    <a href="{{ url_for('user.login')}}">Personal</a>
+                    <br>
+                    <a href="{{ url_for('user.logout') }}">Logout</a>
+                </p>
+
+            </header>
+            <section>
+                {% block body %}{% endblock %}
+            </section>
+            <footer>
+                <p>
+                    <a href="{{ url_for('general.about') }}">About</a>
+                    <br>
+
+                    <small>PyPI Stats.<br></small>
+                </p>
+            </p>
+        </footer>
+    </div>
+    <script>
+        anchors.add();
+    </script>
+
+</body>
+
+</html>

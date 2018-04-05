@@ -7,6 +7,7 @@ from flask import request
 from pypistats.models.download import OverallDownloadCount
 from pypistats.models.download import PythonMajorDownloadCount
 from pypistats.models.download import PythonMinorDownloadCount
+from pypistats.models.download import RECENT_CATEGORIES
 from pypistats.models.download import RecentDownloadCount
 from pypistats.models.download import SystemDownloadCount
 
@@ -19,17 +20,22 @@ def api_downloads_recent(package):
     """Get the recent downloads of a package."""
     category = request.args.get('period')
     if category is None:
-        downloads = RecentDownloadCount.query.filter_by(package=package).all()
-    elif category in ("day", "week", "month"):
-        downloads = RecentDownloadCount.query.filter_by(package=package, category=category).first()
+        downloads = RecentDownloadCount.query.\
+            filter_by(package=package).all()
+    elif category in RECENT_CATEGORIES:
+        downloads = RecentDownloadCount.query.\
+            filter_by(package=package, category=category).all()
     else:
         abort(404)
 
     response = {"package": package, "type": "recent_downloads"}
     if len(downloads) > 0:
-        response["data"] = {
-            r.category: r.downloads for r in downloads
-        }
+        if category is None:
+            response["data"] = {"last_" + rc: 0 for rc in RECENT_CATEGORIES}
+        else:
+            response["data"] = {"last_" + category: 0}
+        for r in downloads:
+            response["data"]["last_" + r.category] = r.downloads
     else:
         abort(404)
 
@@ -51,7 +57,8 @@ def api_downloads_overall(package):
     else:
         downloads = OverallDownloadCount.query.\
             filter_by(package=package).\
-            order_by(OverallDownloadCount.category, OverallDownloadCount.date).all()
+            order_by(OverallDownloadCount.category,
+                     OverallDownloadCount.date).all()
 
     response = {"package": package, "type": "overall_downloads"}
     if len(downloads) > 0:
@@ -69,19 +76,22 @@ def api_downloads_overall(package):
 @blueprint.route("/<package>/python_major")
 def api_downloads_python_major(package):
     """Get the python major download time series of a package."""
-    return generic_downloads(PythonMajorDownloadCount, package, "version", "python_major")
+    return generic_downloads(
+        PythonMajorDownloadCount, package, "version", "python_major")
 
 
 @blueprint.route("/<package>/python_minor")
 def api_downloads_python_minor(package):
     """Get the python minor download time series of a package."""
-    return generic_downloads(PythonMinorDownloadCount, package, "version", "python_minor")
+    return generic_downloads(
+        PythonMinorDownloadCount, package, "version", "python_minor")
 
 
 @blueprint.route("/<package>/system")
 def api_downloads_system(package):
     """Get the system download time series of a package."""
-    return generic_downloads(SystemDownloadCount, package, "os", "system")
+    return generic_downloads(
+        SystemDownloadCount, package, "os", "system")
 
 
 def generic_downloads(model, package, arg, name):

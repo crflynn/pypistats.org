@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}PyPI Stats{% endblock %}
+{% block plot%}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+{% endblock %}
+{% block body %}
+    <h1>Downloads for package:
+        {{package}}</h1>
+    <hr>
+    {% if package == "__all__" %}
+        <p>Download stats for __all__ indicate downloads across all packages on PyPI.</p>
+        <br>
+    {% else %}
+        <p>
+            <a href="{{ metadata['info']['package_url']}}">PyPI page</a>
+            <br>
+            <a href="{{ metadata['info']['home_page']}}">Home page</a>
+            <br>
+            Author:
+            {{metadata['info']['author']}}
+            <br>
+            License:
+            {{metadata['info']['license']}}
+            <br>
+            Summary:
+            {{metadata['info']['summary']}}
+            <br>
+            Latest version:
+            {{metadata['info']['version']}}
+            <br><br>
+            Downloads last day:
+            {{"{:,.0f}".format(recent['day'])}}
+            <br>
+            Downloads last week:
+            {{"{:,.0f}".format(recent['week'])}}
+            <br>
+            Downloads last month:
+            {{"{:,.0f}".format(recent['month'])}}
+        {% endif %}
+        <script>
+
+            (function () {
+                var WIDTH_IN_PERCENT_OF_PARENT = 100
+                // var HEIGHT = '300px'
+                var divelems = []
+
+                var data = {{ plots|tojson }}
+
+                for (plt in data) {
+                    var gd3 = Plotly.d3.select('section').append('div').style({
+                        width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+                        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+                        // height: HEIGHT,
+                    })
+                    var gd = gd3.node()
+                    divelems.push(gd)
+                    Plotly.newPlot(divelems[divelems.length - 1], data[plt].data, data[plt].layout, data[plt].config);
+                }
+                window.onresize = function () {
+                    for (chart in divelems) {
+                        Plotly.Plots.resize(divelems[chart]);
+                    }
+                };
+            })();
+        </script>
+    {% endblock %}

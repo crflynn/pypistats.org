@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}PyPI Stats{% endblock %}
+{% block body %}
+    <h1>Most downloaded PyPI packages</h1>
+    <hr>
+    <table>
+        <tr>
+            {% for best in top %}
+                <td>
+                    Most downloaded past
+                    <b>{{ best['category'].lower() }}</b>.
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for best in top %}
+                <td>
+                    <table>
+                        {% for package in best['packages'] %}
+                            <tr>
+                                <td>
+                                    {{ loop.index }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('general.package', package=package['package']) }}">{{ package['package'] }}</a>
+                                </td>
+                                <td>
+                                    {{ "{:,.0f}".format(package['downloads']) }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endblock %}

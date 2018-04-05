@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}PyPI Stats{% endblock %}
+{% block body %}
+    <h1>Analytics for PyPI packages</h1>
+    <hr>
+    <p>Search for a python package on PyPI.</p>
+    <form method="POST" action="/">
+        {{ form.csrf_token }}
+        {{ form.name.label }}
+        {{ form.name(size=24) }}
+        <input type="submit" value="Search">
+    </form>
+    {% if search %}
+        {% include "results.html" %}
+    {% endif %}
+{% endblock %}
