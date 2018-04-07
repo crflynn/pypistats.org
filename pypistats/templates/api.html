@@ -1,0 +1,256 @@
+{% extends "layout.html" %}
+{% block title %}PyPI Stats{% endblock %}
+{% block body %}
+    <h1>PyPI Stats API</h1>
+    <hr>
+    <p>
+        PyPI Stats provides a simple JSON API for retrieving aggregate download stats and time series for packages. The following are the valid endpoints using host:
+        <code>https://pypistats.org/</code>
+    </p>
+    <h3>NOTES</h3>
+    <p>
+        <ul>
+            <li>All download stats exclude known mirrors (such as
+                <a href="{{ url_for('general.package', package='bandersnatch')}}">bandersnatch</a>) unless noted otherwise.</li>
+            <li>Time series data is retained only for 30 days.</li>
+        </ul>
+    </p>
+    <h2>Endpoints</h2>
+    <h3>/api/&lt;package&gt;/recent</h3>
+    <p>Retrieve the aggregate download quantities for the last day/week/month. Query arguments:
+        <ul>
+            <li>
+                <b>period</b>
+                (optional):
+                <code>day</code>
+                or
+                <code>week</code>
+                or
+                <code>month</code>
+            </li>
+        </ul>
+        Example response:
+        <pre><code>{
+  "data": {
+    "last_day": 1,
+    "last_month": 2,
+    "last_week": 3
+  },
+  "package": "package_name",
+  "type": "recent_downloads"
+}</code></pre>
+    </p>
+    <h3>/api/&lt;package&gt;/overall</h3>
+    <p>Retrieve the aggregate daily download time series with or without mirror downloads. Query arguments:
+        <ul>
+            <li>
+                <b>mirrors</b>
+                (optional):
+                <code>true</code>
+                or
+                <code>false</code>
+            </li>
+            <li>
+                <b>start_date</b>
+                (optional): starting date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+            <li>
+                <b>end_date</b>
+                (optional): ending date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+        </ul>
+        Example response:
+        <pre><code>{
+  "data": [
+    {
+      "category": "with_mirrors",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "without_mirrors",
+      "date": "2018-02-08",
+      "downloads": 1
+    }
+  ],
+  "package": "package_name",
+  "type": "overall_downloads"
+}</code></pre>
+    </p>
+    <h3>/api/&lt;package&gt;/python_major</h3>
+    <p>Retrieve the aggregate daily download time series by Python major version number. Query arguments:
+        <ul>
+            <li>
+                <b>version</b>
+                (optional): the Python major version number, e.g.
+                <code>2</code>
+                or
+                <code>3</code>
+            </li>
+            <li>
+                <b>start_date</b>
+                (optional): starting date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+            <li>
+                <b>end_date</b>
+                (optional): ending date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+        </ul>
+        Example response:
+        <pre><code>{
+  "data": [
+    {
+      "category": "2",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "null",
+      "date": "2018-02-08",
+      "downloads": 1
+    }
+  ],
+  "package": "package_name",
+  "type": "python_major_downloads"
+}</code></pre>
+    </p>
+    <h3>/api/&lt;package&gt;/python_minor</h3>
+    <p>Retrieve the aggregate daily download time series by Python minor version number. Query arguments:
+        <ul>
+            <li>
+                <b>version</b>
+                (optional): the Python major version number, e.g.
+                <code>2.7</code>
+                or
+                <code>3.6</code>
+            </li>
+            <li>
+                <b>start_date</b>
+                (optional): starting date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+            <li>
+                <b>end_date</b>
+                (optional): ending date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+        </ul>
+        Example response:
+        <pre><code>{
+  "data": [
+    {
+      "category": "2.6",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "2.7",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.2",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.3",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.4",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.5",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.6",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "3.7",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "null",
+      "date": "2018-02-08",
+      "downloads": 1
+    }
+  ],
+  "package": "package_name",
+  "type": "python_minor_downloads"
+}</code></pre>
+    </p>
+    <h3>/api/&lt;package&gt;/system</h3>
+    <p>Retrieve the aggregate daily download time series by operating system. Query arguments:
+        <ul>
+            <li>
+                <b>os</b>
+                (optional): the operating system name, e.g.
+                <code>windows</code>,
+                <code>linux</code>, or
+                <code>darwin</code>
+                (Mac OSX).
+            </li>
+            <li>
+                <b>start_date</b>
+                (optional): starting date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+            <li>
+                <b>end_date</b>
+                (optional): ending date of time series in format
+                <code>YYYY-MM-DD</code>
+            </li>
+        </ul>
+        Example response:
+        <pre><code>{
+  "data": [
+    {
+      "category": "darwin",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "linux",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "null",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "other",
+      "date": "2018-02-08",
+      "downloads": 1
+    },
+    {
+      "category": "windows",
+      "date": "2018-02-08",
+      "downloads": 1
+    }
+  ],
+  "package": "package_name",
+  "type": "system_downloads"
+}</code></pre>
+    </p>
+
+{% endblock %}

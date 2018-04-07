@@ -2,6 +2,7 @@
 import os
 
 from pypistats.secret import postgresql
+from pypistats.secret import github
 
 
 def get_db_uri(env):
@@ -22,8 +23,6 @@ class Config(object):
     SECRET_KEY = os.environ.get("PYPISTATS_SECRET", "secret-key")
     APP_DIR = os.path.abspath(os.path.dirname(__file__))
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
-    GITHUB_CLIENT_ID = "test"
-    GITHUB_CLIENT_SECRET = "test"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -33,6 +32,8 @@ class ProdConfig(Config):
     ENV = "prod"
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
+    GITHUB_CLIENT_ID = github[ENV]["client_id"]
+    GITHUB_CLIENT_SECRET = github[ENV]["client_secret"]
 
 
 class DevConfig(Config):
@@ -41,6 +42,8 @@ class DevConfig(Config):
     ENV = "dev"
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
+    GITHUB_CLIENT_ID = github[ENV]["client_id"]
+    GITHUB_CLIENT_SECRET = github[ENV]["client_secret"]
 
 
 class TestConfig(Config):
@@ -51,3 +54,5 @@ class TestConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
     WTF_CSRF_ENABLED = False  # Allows form testing
+    GITHUB_CLIENT_ID = github[ENV]["client_id"]
+    GITHUB_CLIENT_SECRET = github[ENV]["client_secret"]

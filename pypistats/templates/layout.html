@@ -53,10 +53,14 @@
                     <br>
                     <a href="{{ url_for('general.package', package='__all__') }}">__all__</a>
                     <br>
-                    <a href="{{ url_for('general.top') }}">Top</a>
+                    <a href="{{ url_for('general.top') }}">__top__</a>
                     <br>
                     <br>
-                    <a href="{{ url_for('user.login')}}">Personal</a>
+                    {% if user %}
+                        <a href="{{ url_for('user.user')}}">{{ user.username }}'s Packages</a>
+                    {% else %}
+                        <a href="{{ url_for('user.user')}}">My Packages</a>
+                    {% endif %}
                     <br>
                     <a href="{{ url_for('user.logout') }}">Logout</a>
                 </p>
@@ -67,10 +71,10 @@
             </section>
             <footer>
                 <p>
+                    <a href="{{ url_for('api.api') }}">API</a>
+                    <br>
                     <a href="{{ url_for('general.about') }}">About</a>
                     <br>
-
-                    <small>PyPI Stats.<br></small>
                 </p>
             </p>
         </footer>

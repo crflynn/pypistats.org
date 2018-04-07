@@ -4,15 +4,19 @@
     <h1>About PyPI Stats</h1>
     <hr>
     <h3>Goal</h3>
-    <p>PyPI Stats aims to provide aggregate download information on python packages available from the Python Package Index.</p>
+    <p>PyPI Stats aims to provide aggregate download information on python packages available from the Python Package Index in lieu of having to execute queries against raw download records in Google BigQuery.</p>
     <h3>Data</h3>
     <p>Download stats are sourced from the Python Software Foundation's publicly available
         <a href="https://bigquery.cloud.google.com/table/the-psf:pypi.downloads">download stats</a>
         on Google BigQuery. All aggregate download stats ignore known PyPI mirrors (such as
         <a href="{{url_for('general.package', package='bandersnatch')}}">bandersnatch</a>) unless noted otherwise.</p>
-    <p>PyPI Stats attempts to operate within the free tier in AWS. For this reason, aggregate data is only retained for 30 days.</p>
+    <p>PyPI Stats attempts to operate within the free tier of its hosted services. For this reason, aggregate data is only retained for 30 days.</p>
+    <h3>API</h3>
+    <p>A simple
+        <a href="{{url_for('api.api')}}">JSON API</a>
+        is available for aggregate download stats and time series for packages.</p>
     <h3>Tech</h3>
-    <p>PyPI Stats is a project developed using Python 3.6.
+    <p>PyPI Stats is a project developed using Python 3.6. Here are some of the tools used to create it:
         <ul>
             <li>Framework:
                 <a href="{{url_for('general.package', package='flask')}}">Flask</a>

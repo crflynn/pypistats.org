@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}PyPI Stats{% endblock %}
+{% block body %}
+    {% if user %}
+
+        <h1><img src="{{ user.avatar_url }}" height="30" width="30">
+            {{ user.username }}'s Packages</h1>
+        <hr>
+        <p>Currently saved packages.</p>
+        {% if user.favorites %}
+            <p>
+                <ul>
+                    {% for package in user.favorites %}
+                        <li>
+                            <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <!-- <table> {% for package in user.favorites %} <tr> <td> <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a> </td> <td> <a href="{{ url_for('user.user_package', package=package) }}">REMOVE</a> </td> </tr> {% endfor %}
+                </table> -->
+            </p>
+        {% else %}
+            <p>Not tracking any packages.</p>
+        {% endif %}
+    {% else %}
+        <h1>My Packages</h1>
+        <hr>
+        <p>Login with GitHub OAuth to track your own set of packages.</p>
+        <p>
+            <a href="{{ url_for('user.login') }}">Login</a>
+        </p>
+    {% endif %}
+{% endblock %}

@@ -10,15 +10,20 @@ from pypistats.database import SurrogatePK
 from pypistats.extensions import db
 
 
+MAX_FAVORITES = 20
+
+
 class User(UserMixin, SurrogatePK, Model):
     """A user of the app."""
 
     __tablename__ = 'users'
 
-    username = Column(db.String(39), unique=True, nullable=False)
-    # icon
+    uid = Column(db.Integer(), unique=True)
+    username = Column(db.String(39), nullable=False)
+    avatar_url = Column(db.String(256))
     token = Column(db.String(256))
-    created_at = Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    created_at = \
+        Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
     favorites = Column(ARRAY(db.String(128), dimensions=1))

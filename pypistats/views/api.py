@@ -1,7 +1,9 @@
 """JSON API routes."""
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import jsonify
+from flask import render_template
 from flask import request
 
 from pypistats.models.download import OverallDownloadCount
@@ -13,6 +15,12 @@ from pypistats.models.download import SystemDownloadCount
 
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
+
+
+@blueprint.route("/")
+def api():
+    """Get API documentation."""
+    return render_template("api.html", user=g.user)
 
 
 @blueprint.route("/<package>/recent")
@@ -99,7 +107,7 @@ def generic_downloads(model, package, arg, name):
     category = request.args.get(f"{arg}")
     if category is not None:
         downloads = model.query.\
-            filter_by(package=package, category=category).\
+            filter_by(package=package, category=category.lower()).\
             order_by(model.date).all()
     else:
         downloads = model.query.\

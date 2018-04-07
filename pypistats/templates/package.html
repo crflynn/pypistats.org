@@ -5,9 +5,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 {% endblock %}
 {% block body %}
-    <h1>Downloads for package:
-        {{package}}</h1>
+    <h1>{{package}}</h1>
     <hr>
+    {% if user %}
+        {% if user.favorites and package in user.favorites %}
+            <p>
+                <img src="{{ user.avatar_url }}" height="20" width="20">
+                <a href="{{ url_for('user.user_package', package=package)}}">REMOVE from my packages</a><br></p>
+        {% else %}
+            <p>
+                <img src="{{ user.avatar_url }}" height="20" width="20">
+                <a href="{{ url_for('user.user_package', package=package)}}">ADD to my packages</a><br></p>
+        {% endif %}
+    {% endif %}
     {% if package == "__all__" %}
         <p>Download stats for __all__ indicate downloads across all packages on PyPI.</p>
         <br>

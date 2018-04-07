@@ -4,6 +4,7 @@ import os
 
 from flask import Blueprint
 from flask import current_app
+from flask import g
 from flask import json
 from flask import redirect
 from flask import render_template
@@ -44,7 +45,7 @@ def index():
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package}")
-    return render_template("index.html", form=form)
+    return render_template("index.html", form=form, user=g.user)
 
 
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
@@ -61,14 +62,14 @@ def search(package):
         limit(20).all()
     packages = [r.package for r in results]
     return render_template(
-        "search.html", search=True, form=form, packages=packages
+        "search.html", search=True, form=form, packages=packages, user=g.user
     )
 
 
 @blueprint.route("/about")
 def about():
     """Render the about page."""
-    return render_template("about.html")
+    return render_template("about.html", user=g.user)
 
 
 @blueprint.route("/package/<package>")
@@ -125,7 +126,8 @@ def package(package):
         package=package,
         plots=plots,
         metadata=metadata,
-        recent=recent
+        recent=recent,
+        user=g.user
     )
 
 
@@ -159,7 +161,7 @@ def top():
                 "downloads": d.downloads,
             } for d in downloads]
         })
-    return render_template("top.html", top=top)
+    return render_template("top.html", top=top, user=g.user)
 
 
 @blueprint.route("/status")
