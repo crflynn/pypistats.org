@@ -111,7 +111,7 @@ def package(package):
             data.append(base)
         plot["data"] = data
         plot["layout"]["title"] = \
-            f"Downloads by {model['name'].title().replace('_', ' ')}"
+            f"Downloads of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         plots.append(plot)
 
     # Recent download stats
