@@ -38,6 +38,9 @@ SCHEMA = [
 # postgresql tables to update for __all__
 PSQL_TABLES = ["overall", "python_major", "python_minor", "system"]
 
+# Number of days to retain records
+MAX_RECORD_AGE = 45
+
 
 def get_daily_download_stats(date, env="dev"):
     """Get daily download stats for pypi packages from BigQuery."""
@@ -241,6 +244,28 @@ def get_connection_cursor(env):
     )
     cursor = connection.cursor()
     return connection, cursor
+
+
+def purge_old_data(date, env="dev", age=MAX_RECORD_AGE):
+    """Purge old data records."""
+    connection, cursor = get_connection_cursor(env)
+
+    date = datetime.datetime.strptime(date, '%Y-%m-%d')
+    purge_date = date - datetime.timedelta(days=age)
+    purge_date = purge_date.strftime('%Y-%m-%d')
+
+    success = {}
+    for table in PSQL_TABLES:
+        delete_query = f"""DELETE FROM {table} where date < '{purge_date}'"""
+        try:
+            cursor.execute(delete_query)
+            connection.commit()
+            success[table] = True
+        except psycopg2.IntegrityError as e:
+            connection.rollback()
+            success[table] = False
+
+    return success
 
 
 def get_query(date):

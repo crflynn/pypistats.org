@@ -16,6 +16,7 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-login = "*"
 flask-wtf = "*"
+zappa = "*"
 
 
 [dev-packages]
