@@ -3,14 +3,22 @@
 {% block body %}
     <h1>Analytics for PyPI packages</h1>
     <hr>
-    <p>Search for a python package on PyPI.</p>
     <form method="POST" action="/">
         {{ form.csrf_token }}
         {{ form.name.label }}
         {{ form.name(size=24) }}
         <input type="submit" value="Search">
     </form>
+    <br>
+    {% if not search %}
+        <p>Search among
+            <b>{{ "{:,.0f}".format(package_count) }}</b>
+            python packages from PyPI (updated daily).</p>
+    {% else %}
+        Search results:
+    {% endif %}
     {% if search %}
+        <br>
         {% include "results.html" %}
     {% endif %}
 {% endblock %}

@@ -35,6 +35,9 @@ SCHEMA = [
     bigquery.SchemaField("downloads", "INTEGER", mode="NULLABLE"),
 ]
 
+# postgresql tables to update for __all__
+PSQL_TABLES = ["overall", "python_major", "python_minor", "system"]
+
 
 def get_daily_download_stats(date, env="dev"):
     """Get daily download stats for pypi packages from BigQuery."""
@@ -108,16 +111,8 @@ def get_daily_download_stats(date, env="dev"):
 
 
 def update_db(df, env="dev"):
-    """Update the db for the table."""
-    connection = psycopg2.connect(
-        dbname=postgresql[env]['dbname'],
-        user=postgresql[env]['username'],
-        password=postgresql[env]['password'],
-        host=postgresql[env]['host'],
-        port=postgresql[env]['port'],
-        # sslmode='require',
-    )
-    cursor = connection.cursor()
+    """Update the db with new data by table."""
+    connection, cursor = get_connection_cursor(env)
 
     df_groups = df.groupby("category_label")
 
@@ -130,15 +125,17 @@ def update_db(df, env="dev"):
             "category",
             "downloads",
         ]]
-        # success[table] = update_table(cursor, table, df_category, date)
-        update_all_package_stats(cursor, table, date)
+        success[table] = update_table(
+            connection, cursor, table, df_category, date
+        )
+        # update_all_package_stats(cursor, table, date)
 
-    update_recent_stats(cursor, date)
+    # update_recent_stats(cursor, date)
 
     return success
 
 
-def update_table(cursor, table, df, date):
+def update_table(connection, cursor, table, df, date):
     """Update a table."""
     print(table)
     df = df.fillna("null")
@@ -153,41 +150,46 @@ def update_table(cursor, table, df, date):
     try:
         cursor.execute(delete_query)
         execute_values(cursor, insert_query, values)
-        cursor.execute("commit")
+        connection.commit()
         return True
     except psycopg2.IntegrityError as e:
-        cursor.execute("rollback")
+        connection.rollback()
         return False
 
 
-def update_all_package_stats(cursor, table, date):
+def update_all_package_stats(date, env="dev"):
     """Update stats for __all__ packages."""
     print("__all__")
-    aggregate_query = \
-        f"""SELECT date, '__all__' AS package, category, sum(downloads) AS downloads
-            FROM {table} GROUP BY date, category"""
-    cursor.execute(aggregate_query, (table,))
-    values = cursor.fetchall()
+    connection, cursor = get_connection_cursor(env)
 
-    delete_query = \
-        f"""DELETE FROM {table}
-            WHERE date = '{date}' and package = '__all__'"""
-    insert_query = \
-        f"""INSERT INTO {table} (date, package, category, downloads)
-            VALUES %s"""
-    try:
-        cursor.execute(delete_query)
-        execute_values(cursor, insert_query, values)
-        cursor.execute("commit")
-        return True
-    except psycopg2.IntegrityError as e:
-        cursor.execute("rollback")
-        return False
+    for table in PSQL_TABLES:
+        aggregate_query = \
+            f"""SELECT date, '__all__' AS package, category, sum(downloads) AS downloads
+                FROM {table} GROUP BY date, category"""
+        cursor.execute(aggregate_query, (table,))
+        values = cursor.fetchall()
+
+        delete_query = \
+            f"""DELETE FROM {table}
+                WHERE date = '{date}' and package = '__all__'"""
+        insert_query = \
+            f"""INSERT INTO {table} (date, package, category, downloads)
+                VALUES %s"""
+        try:
+            cursor.execute(delete_query)
+            execute_values(cursor, insert_query, values)
+            connection.commit()
+            return True
+        except psycopg2.IntegrityError as e:
+            connection.rollback()
+            return False
 
 
-def update_recent_stats(cursor, date):
+def update_recent_stats(date, env="dev"):
     """Update daily, weekly, monthly stats for all packages."""
     print("recent")
+    connection, cursor = get_connection_cursor(env)
+
     downloads_table = "overall"
     recent_table = "recent"
 
@@ -220,11 +222,25 @@ def update_recent_stats(cursor, date):
         try:
             cursor.execute(delete_query)
             execute_values(cursor, insert_query, values)
-            cursor.execute("commit")
+            connection.commit()
             success[time] = True
         except psycopg2.IntegrityError as e:
-            cursor.execute("rollback")
+            connection.rollback()
             success[time] = False
+
+
+def get_connection_cursor(env):
+    """Get a db connection cursor."""
+    connection = psycopg2.connect(
+        dbname=postgresql[env]['dbname'],
+        user=postgresql[env]['username'],
+        password=postgresql[env]['password'],
+        host=postgresql[env]['host'],
+        port=postgresql[env]['port'],
+        # sslmode='require',
+    )
+    cursor = connection.cursor()
+    return connection, cursor
 
 
 def get_query(date):

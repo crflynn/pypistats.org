@@ -1,7 +1,9 @@
 """General pages."""
 from copy import deepcopy
 import os
+import re
 
+from flask import abort
 from flask import Blueprint
 from flask import current_app
 from flask import g
@@ -19,7 +21,7 @@ from pypistats.models.download import PythonMinorDownloadCount
 from pypistats.models.download import RECENT_CATEGORIES
 from pypistats.models.download import RecentDownloadCount
 from pypistats.models.download import SystemDownloadCount
-
+from sqlalchemy import distinct
 
 blueprint = Blueprint("general", __name__, template_folder="templates")
 
@@ -45,7 +47,15 @@ def index():
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package}")
-    return render_template("index.html", form=form, user=g.user)
+    package_count = \
+        RecentDownloadCount.query.filter_by(category="month").count()
+    print(package_count)
+    return render_template(
+        "index.html",
+        form=form,
+        user=g.user,
+        package_count=package_count
+    )
 
 
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
@@ -75,12 +85,31 @@ def about():
 @blueprint.route("/package/<package>")
 def package(package):
     """Render the package page."""
+    # Recent download stats
+    recent_downloads = RecentDownloadCount.query.\
+        filter_by(package=package).all()
+    if len(recent_downloads) == 0:
+        abort(404)
+    recent = {r: 0 for r in RECENT_CATEGORIES}
+    for r in recent_downloads:
+        recent[r.category] = r.downloads
+
     # PyPI metadata
-    try:
-        metadata = requests.get(
-            f"https://pypi.python.org/pypi/{package}/json").json()
-    except Exception:
-        metadata = None
+    metadata = None
+    if package != "__all__":
+        try:
+            metadata = requests.get(
+                f"https://pypi.python.org/pypi/{package}/json",
+                timeout=5).json()
+            if metadata["info"].get("requires_dist", None):
+                metadata["requires"] = []
+                for required in metadata["info"]["requires_dist"]:
+                    print(package, re.split(r"[^0-9a-zA-Z_.-]+", required))
+                    metadata["requires"].append(
+                        re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
+                    )
+        except Exception:
+            pass
 
     # Get data from db
     model_data = []
@@ -113,13 +142,6 @@ def package(package):
         plot["layout"]["title"] = \
             f"Downloads of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         plots.append(plot)
-
-    # Recent download stats
-    recent_downloads = RecentDownloadCount.query.\
-        filter_by(package=package).all()
-    recent = {r: 0 for r in RECENT_CATEGORIES}
-    for r in recent_downloads:
-        recent[r.category] = r.downloads
 
     return render_template(
         "package.html",

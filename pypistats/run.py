@@ -1,4 +1,6 @@
 """Run the application."""
+import os
+
 from flask import g
 from flask import session
 

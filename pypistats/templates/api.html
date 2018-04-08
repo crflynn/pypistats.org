@@ -7,7 +7,7 @@
         PyPI Stats provides a simple JSON API for retrieving aggregate download stats and time series for packages. The following are the valid endpoints using host:
         <code>https://pypistats.org/</code>
     </p>
-    <h3>NOTES</h3>
+    <h2>NOTES</h2>
     <p>
         <ul>
             <li>All download stats exclude known mirrors (such as
@@ -18,7 +18,9 @@
     </p>
     <h2>Endpoints</h2>
     <h3>/api/&lt;package&gt;/recent</h3>
-    <p>Retrieve the aggregate download quantities for the last day/week/month. Query arguments:
+    <p>Retrieve the aggregate download quantities for the last day/week/month.
+    </p>
+    <p>Query arguments:
         <ul>
             <li>
                 <b>period</b>
@@ -27,7 +29,7 @@
                 or
                 <code>week</code>
                 or
-                <code>month</code>
+                <code>month</code>. If omitted returns all values.
             </li>
         </ul>
         Example response:
@@ -42,25 +44,18 @@
 }</code></pre>
     </p>
     <h3>/api/&lt;package&gt;/overall</h3>
-    <p>Retrieve the aggregate daily download time series with or without mirror downloads. Query arguments:
+    <p>Retrieve the aggregate daily download time series with or without mirror downloads.
+    </p>
+    <p>Query arguments:
         <ul>
             <li>
                 <b>mirrors</b>
                 (optional):
                 <code>true</code>
                 or
-                <code>false</code>
+                <code>false</code>. If omitted returns both series data.
             </li>
-            <li>
-                <b>start_date</b>
-                (optional): starting date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
-            <li>
-                <b>end_date</b>
-                (optional): ending date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
+            <!-- <li> <b>start_date</b> (optional): starting date of time series in format <code>YYYY-MM-DD</code> </li> <li> <b>end_date</b> (optional): ending date of time series in format <code>YYYY-MM-DD</code> </li> -->
         </ul>
         Example response:
         <pre><code>{
@@ -81,25 +76,19 @@
 }</code></pre>
     </p>
     <h3>/api/&lt;package&gt;/python_major</h3>
-    <p>Retrieve the aggregate daily download time series by Python major version number. Query arguments:
+    <p>Retrieve the aggregate daily download time series by Python major version number.
+    </p>
+    <p>Query arguments:
         <ul>
             <li>
                 <b>version</b>
                 (optional): the Python major version number, e.g.
                 <code>2</code>
                 or
-                <code>3</code>
+                <code>3</code>. If omitted returns all series data (including
+                <code>null</code>).
             </li>
-            <li>
-                <b>start_date</b>
-                (optional): starting date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
-            <li>
-                <b>end_date</b>
-                (optional): ending date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
+            <!-- <li> <b>start_date</b> (optional): starting date of time series in format <code>YYYY-MM-DD</code> </li> <li> <b>end_date</b> (optional): ending date of time series in format <code>YYYY-MM-DD</code> </li> -->
         </ul>
         Example response:
         <pre><code>{
@@ -125,25 +114,19 @@
 }</code></pre>
     </p>
     <h3>/api/&lt;package&gt;/python_minor</h3>
-    <p>Retrieve the aggregate daily download time series by Python minor version number. Query arguments:
+    <p>Retrieve the aggregate daily download time series by Python minor version number.
+    </p>
+    <p>Query arguments:
         <ul>
             <li>
                 <b>version</b>
                 (optional): the Python major version number, e.g.
                 <code>2.7</code>
                 or
-                <code>3.6</code>
+                <code>3.6</code>. If omitted returns all series data (including
+                <code>null</code>).
             </li>
-            <li>
-                <b>start_date</b>
-                (optional): starting date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
-            <li>
-                <b>end_date</b>
-                (optional): ending date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
+            <!-- <li> <b>start_date</b> (optional): starting date of time series in format <code>YYYY-MM-DD</code> </li> <li> <b>end_date</b> (optional): ending date of time series in format <code>YYYY-MM-DD</code> </li> -->
         </ul>
         Example response:
         <pre><code>{
@@ -199,26 +182,21 @@
 }</code></pre>
     </p>
     <h3>/api/&lt;package&gt;/system</h3>
-    <p>Retrieve the aggregate daily download time series by operating system. Query arguments:
+    <p>Retrieve the aggregate daily download time series by operating system.
+    </p>
+    <p>Query arguments:
         <ul>
             <li>
                 <b>os</b>
                 (optional): the operating system name, e.g.
                 <code>windows</code>,
-                <code>linux</code>, or
+                <code>linux</code>,
                 <code>darwin</code>
-                (Mac OSX).
+                or
+                <code>other</code>. If omitted returns all series data (including
+                <code>null</code>).
             </li>
-            <li>
-                <b>start_date</b>
-                (optional): starting date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
-            <li>
-                <b>end_date</b>
-                (optional): ending date of time series in format
-                <code>YYYY-MM-DD</code>
-            </li>
+            <!-- <li> <b>start_date</b> (optional): starting date of time series in format <code>YYYY-MM-DD</code> </li> <li> <b>end_date</b> (optional): ending date of time series in format <code>YYYY-MM-DD</code> </li> -->
         </ul>
         Example response:
         <pre><code>{

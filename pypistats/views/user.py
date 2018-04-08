@@ -102,11 +102,12 @@ def user_package(package):
     if g.user:
         # Ensure package is valid.
         downloads = RecentDownloadCount.query.filter_by(package=package).all()
-        if downloads is None:
-            return abort(400)
 
         # Handle add/remove to favorites
         if g.user.favorites is None:
+            # Ensure package is valid before adding
+            if len(downloads) == 0:
+                return abort(400)
             g.user.favorites = [package]
             g.user.update()
             return redirect(url_for("user.user"))
@@ -121,6 +122,9 @@ def user_package(package):
             return redirect(url_for("user.user"))
         else:
             if len(g.user.favorites) < MAX_FAVORITES:
+                # Ensure package is valid before adding
+                if len(downloads) == 0:
+                    return abort(400)
                 favorites = g.user.favorites
                 favorites.append(package)
                 favorites = sorted(favorites)

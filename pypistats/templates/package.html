@@ -23,30 +23,48 @@
         <br>
     {% else %}
         <p>
-            <a href="{{ metadata['info']['package_url']}}">PyPI page</a>
-            <br>
-            <a href="{{ metadata['info']['home_page']}}">Home page</a>
-            <br>
-            Author:
-            {{metadata['info']['author']}}
-            <br>
-            License:
-            {{metadata['info']['license']}}
-            <br>
-            Summary:
-            {{metadata['info']['summary']}}
-            <br>
-            Latest version:
-            {{metadata['info']['version']}}
-            <br><br>
-            Downloads last day:
-            {{"{:,.0f}".format(recent['day'])}}
-            <br>
-            Downloads last week:
-            {{"{:,.0f}".format(recent['week'])}}
-            <br>
-            Downloads last month:
-            {{"{:,.0f}".format(recent['month'])}}
+            {% if metadata %}
+                <a href="{{ metadata['info']['package_url']}}">PyPI page</a>
+                <br>
+                <a href="{{ metadata['info']['home_page']}}">Home page</a>
+                <br>
+                Author:
+                {{metadata['info']['author']}}
+                <br>
+                License:
+                {% if metadata['info']['license'] | length > 200 %}
+
+                    {{metadata['info']['license'][:200]}}...
+                {% else %}
+                    {{metadata['info']['license']}}
+                {% endif %}
+                <br>
+                Summary :
+                {{metadata['info']['summary']}}
+                <br>
+                Latest version :
+                {{metadata['info']['version']}}
+                <br>
+                {% if metadata['requires'] %}
+                    Requires:
+                    {% for required in metadata['requires'] %}
+                        <a href="{{ url_for('general.package', package=required.lower())}}">{{required.lower()}}</a>
+                        {% if not loop.last %}|{% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br><br>
+                Downloads last day:
+                {{"{:,.0f}".format(recent['day'])}}
+                <br>
+                Downloads last week:
+                {{"{:,.0f}".format(recent['week'])}}
+                <br>
+                Downloads last month:
+                {{"{:,.0f}".format(recent['month'])}}
+            {% else %}
+                No metadata found.
+                {%endif%}
+            </p>
         {% endif %}
         <script>
 

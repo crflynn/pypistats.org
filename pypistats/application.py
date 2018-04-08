@@ -6,8 +6,6 @@ from pypistats.extensions import db
 from pypistats.extensions import github
 from pypistats.extensions import migrate
 from pypistats.settings import DevConfig
-from pypistats.settings import ProdConfig
-from pypistats.settings import TestConfig
 
 
 def create_app(config_object=DevConfig):
