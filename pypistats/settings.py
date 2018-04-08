@@ -56,3 +56,10 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False  # Allows form testing
     GITHUB_CLIENT_ID = github[ENV]["client_id"]
     GITHUB_CLIENT_SECRET = github[ENV]["client_secret"]
+
+
+configs = {
+    "dev": DevConfig,
+    "prod": ProdConfig,
+    "test": TestConfig,
+}

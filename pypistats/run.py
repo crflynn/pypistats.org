@@ -6,13 +6,13 @@ from flask import session
 
 from pypistats.application import create_app
 from pypistats.models.user import User
-from pypistats.settings import DevConfig
-from pypistats.settings import ProdConfig
-from pypistats.settings import TestConfig
+from pypistats.settings import configs
 
+
+env = os.environ.get("ENV", "dev")
 
 # change this for migrations
-app = create_app(DevConfig)
+app = create_app(configs[env])
 
 
 @app.before_request

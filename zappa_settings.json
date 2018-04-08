@@ -1,0 +1,13 @@
+{
+    "dev": {
+        "app_function": "pypistats.run.app",
+        "aws_region": "us-east-1",
+        "environment_variables": {
+            "ENV": "dev"
+        },
+        "profile_name": "default",
+        "project_name": "pypistats",
+        "runtime": "python3.6",
+        "s3_bucket": "pypistats"
+    }
+}
