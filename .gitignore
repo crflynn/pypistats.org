@@ -12,3 +12,9 @@ __pycache__
 
 # ignore
 ignore/
+
+# packaged deployments
+*.zip
+
+# zappa settings
+zappa_settings.json
