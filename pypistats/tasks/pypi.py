@@ -12,25 +12,16 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 
-# Load env vars
-ENV = os.environ.get("ENV", None)
-
-# If none then load dev locally.
-if ENV is None:
+# For local use.
+def load_env_vars(env="dev"):
+    """Load environment variables."""
     local_path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         "secret",
-        "env_vars_dev.json")
+        f"env_vars_{env}.json")
     for key, value in json.load(open(local_path, 'r')).items():
         os.environ[key] = value
 
-# # OLD: FOR LOCAL EXECUTION
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = \
-#     os.path.join(
-#         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-#         "secret",
-#         "secret.json",
-# )
 
 # Mirrors to disregard when considering downloads
 MIRRORS = ("bandersnatch", "z3c.pypimirror", "Artifactory", "devpi")
@@ -78,15 +69,19 @@ def get_google_credentials():
     return credentials
 
 
-def get_daily_download_stats(date, env="dev"):
+def get_daily_download_stats(env="dev", date="None"):
     """Get daily download stats for pypi packages from BigQuery."""
     start = time.time()
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(env)
     job_config = bigquery.QueryJobConfig()
     credentials = get_google_credentials()
     bq_client = bigquery.Client(
         project=os.environ["GOOGLE_PROJECT_ID"],
         credentials=credentials
     )
+    if date == "None":
+        date = str(datetime.date.today() - datetime.timedelta(days=1))
 
     # # Prepare a reference to the new dataset
     # dataset_ref = bq_client.dataset(DATASET_ID)
@@ -130,6 +125,7 @@ def get_daily_download_stats(date, env="dev"):
     query_job = bq_client.query(query, job_config=job_config)
     iterator = query_job.result()
     rows = list(iterator)
+    print(len(rows), "rows from gbq")
 
     data = []
     for row in rows:
@@ -149,7 +145,8 @@ def get_daily_download_stats(date, env="dev"):
         "downloads",
     ])
 
-    df.to_csv("ignore/sample_data.csv")
+    # # For local testing
+    # df.to_csv("ignore/sample_data.csv")
 
     results = update_db(df, env)
     print("Elapsed: " + str(time.time() - start))
@@ -158,6 +155,8 @@ def get_daily_download_stats(date, env="dev"):
 
 def update_db(df, env="dev"):
     """Update the db with new data by table."""
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(env)
     connection, cursor = get_connection_cursor(env)
 
     df_groups = df.groupby("category_label")
@@ -194,7 +193,9 @@ def update_table(connection, cursor, table, df, date):
             VALUES %s"""
     values = list(df.itertuples(index=False, name=None))
     try:
+        print(delete_query)
         cursor.execute(delete_query)
+        print(insert_query)
         execute_values(cursor, insert_query, values)
         connection.commit()
         return True
@@ -203,10 +204,16 @@ def update_table(connection, cursor, table, df, date):
         return False
 
 
-def update_all_package_stats(date, env="dev"):
+def update_all_package_stats(env="dev", date="None"):
     """Update stats for __all__ packages."""
     print("__all__")
     start = time.time()
+
+    if date == "None":
+        date = str(datetime.date.today() - datetime.timedelta(days=1))
+
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(env)
     connection, cursor = get_connection_cursor(env)
 
     success = {}
@@ -224,7 +231,9 @@ def update_all_package_stats(date, env="dev"):
             f"""INSERT INTO {table} (date, package, category, downloads)
                 VALUES %s"""
         try:
+            print(delete_query)
             cursor.execute(delete_query)
+            print(insert_query)
             execute_values(cursor, insert_query, values)
             connection.commit()
             success[table] = True
@@ -236,10 +245,16 @@ def update_all_package_stats(date, env="dev"):
     return success
 
 
-def update_recent_stats(date, env="dev"):
+def update_recent_stats(env="dev", date="None"):
     """Update daily, weekly, monthly stats for all packages."""
     print("recent")
     start = time.time()
+
+    if date == "None":
+        date = str(datetime.date.today() - datetime.timedelta(days=1))
+
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(env)
     connection, cursor = get_connection_cursor(env)
 
     downloads_table = "overall"
@@ -272,7 +287,9 @@ def update_recent_stats(date, env="dev"):
             f"""INSERT INTO {recent_table}
                (package, category, downloads) VALUES %s"""
         try:
+            print(delete_query)
             cursor.execute(delete_query)
+            print(insert_query)
             execute_values(cursor, insert_query, values)
             connection.commit()
             success[period] = True
@@ -298,10 +315,16 @@ def get_connection_cursor(env):
     return connection, cursor
 
 
-def purge_old_data(date, env="dev", age=MAX_RECORD_AGE):
+def purge_old_data(env="dev", age=MAX_RECORD_AGE, date="None"):
     """Purge old data records."""
     print("Purge")
     start = time.time()
+
+    if date == "None":
+        date = str(datetime.date.today() - datetime.timedelta(days=1))
+
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(env)
     connection, cursor = get_connection_cursor(env)
 
     date = datetime.datetime.strptime(date, '%Y-%m-%d')
@@ -312,6 +335,7 @@ def purge_old_data(date, env="dev", age=MAX_RECORD_AGE):
     for table in PSQL_TABLES:
         delete_query = f"""DELETE FROM {table} where date < '{purge_date}'"""
         try:
+            print(delete_query)
             cursor.execute(delete_query)
             connection.commit()
             success[table] = True
@@ -415,8 +439,9 @@ def get_query(date):
 
 
 if __name__ == "__main__":
-    date = "2018-02-09"
-    env = "dev"
-    # print(get_daily_download_stats(date, env))
-    print(update_all_package_stats(date, env))
-    # print(update_recent_stats(date, env))
+    date = "2018-04-16"
+    env = "prod"
+    print(date, env)
+    print(get_daily_download_stats(env, date))
+    print(update_all_package_stats(env, date))
+    print(update_recent_stats(env, date))

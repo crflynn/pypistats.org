@@ -9,9 +9,10 @@ from pypistats.models.user import User
 from pypistats.settings import configs
 
 
+# change this for migrations
 env = os.environ.get("ENV", "dev")
 
-# change this for migrations
+
 app = create_app(configs[env])
 
 

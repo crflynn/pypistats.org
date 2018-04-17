@@ -3,15 +3,13 @@ import json
 import os
 
 
-# Load env vars
-ENV = os.environ.get("ENV", None)
-
-# If none then load dev locally.
-if ENV is None:
+# For local use.
+def load_env_vars(env="dev"):
+    """Load environment variables."""
     local_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "secret",
-        "env_vars_dev.json")
+        f"env_vars_{env}.json")
     for key, value in json.load(open(local_path, 'r')).items():
         os.environ[key] = value
 
@@ -36,7 +34,6 @@ class Config(object):
     GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     SECRET_KEY = os.environ.get("PYPISTATS_SECRET", "secret-key")
-    SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -45,6 +42,9 @@ class ProdConfig(Config):
 
     DEBUG = False
     ENV = "prod"
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(ENV)
+    SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
 
 
 class DevConfig(Config):
@@ -52,6 +52,9 @@ class DevConfig(Config):
 
     DEBUG = True
     ENV = "dev"
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(ENV)
+    SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
 
 
 class TestConfig(Config):
@@ -59,6 +62,9 @@ class TestConfig(Config):
 
     DEBUG = True
     ENV = "dev"
+    if os.environ.get("ENV", None) is None:
+        load_env_vars(ENV)
+    SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
     TESTING = True
     WTF_CSRF_ENABLED = False  # Allows form testing
 
