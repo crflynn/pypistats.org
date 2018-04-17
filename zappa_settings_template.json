@@ -1,0 +1,119 @@
+{
+    "dev": {
+        "app_function": "pypistats.run.app",
+        "aws_region": "REDACTED",
+        "certificate_arn": "REDACTED",
+        "delete_local_zip": true,
+        "domain": "dev.pypistats.org",
+        "environment_variables": {
+            "ENV": "dev"
+        },
+        "events": [
+            {
+                "function": "pypistats.tasks.pypi.get_daily_download_stats",
+                "kwargs": {"env": "dev", "date": "None"},
+                "expression": "cron(0 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.update_all_package_stats",
+                "kwargs": {"env": "dev", "date": "None"},
+                "expression": "cron(10 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.update_recent_stats",
+                "kwargs": {"env": "dev", "date": "None"},
+                "expression": "cron(15 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.purge_old_data",
+                "kwargs": {"env": "dev", "date": "None"},
+                "expression": "cron(20 1 * * ? *)"
+            }
+        ],
+        "exclude": [
+            "docs/",
+            "ignore/",
+            "migrations/",
+            "tests/",
+            "pypistats/secret/",
+            "pypistats/static/",
+            "boto3*",
+            "botocore*"
+        ],
+        "keep_warm": false,
+        "profile_name": "REDACTED",
+        "project_name": "pypistats",
+        "memory_size": 128,
+        "remote_env": "REDACTED",
+        "route53_enabled": true,
+        "runtime": "python3.6",
+        "s3_bucket": "pypistats",
+        "slim_handler": false,
+        "timeout_seconds": 30,
+        "vpc_config" : {
+            "SubnetIds": [
+                "REDACTED",
+            ],
+            "SecurityGroupIds": ["REDACTED"]
+        }
+    },
+    "prod": {
+        "app_function": "pypistats.run.app",
+        "aws_region": "REDACTED",
+        "certificate_arn": "REDACTED",
+        "delete_local_zip": true,
+        "domain": "pypistats.org",
+        "environment_variables": {
+            "ENV": "prod"
+        },
+        "events": [
+            {
+                "function": "pypistats.tasks.pypi.get_daily_download_stats",
+                "kwargs": {"env": "prod", "date": "None"},
+                "expression": "cron(0 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.update_all_package_stats",
+                "kwargs": {"env": "prod", "date": "None"},
+                "expression": "cron(10 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.update_recent_stats",
+                "kwargs": {"env": "prod", "date": "None"},
+                "expression": "cron(15 1 * * ? *)"
+            },
+            {
+                "function": "pypistats.tasks.pypi.purge_old_data",
+                "kwargs": {"env": "prod", "date": "None"},
+                "expression": "cron(20 1 * * ? *)"
+            }
+        ],
+        "exclude": [
+            "docs/",
+            "ignore/",
+            "migrations/",
+            "tests/",
+            "pypistats/secret/",
+            "pypistats/static/",
+            "boto3*",
+            "botocore*"
+        ],
+        "keep_warm": true,
+        "keep_warm_expression": "rate(4 minutes)",
+        "profile_name": "REDACTED",
+        "project_name": "pypistats",
+        "memory_size": 128,
+        "remote_env": "REDACTED",
+        "route53_enabled": true,
+        "runtime": "python3.6",
+        "s3_bucket": "REDACTED",
+        "slim_handler": false,
+        "timeout_seconds": 30,
+        "vpc_config" : {
+            "SubnetIds": [
+                "REDACTED",
+            ],
+            "SecurityGroupIds": ["REDACTED"]
+        }
+    }
+}
