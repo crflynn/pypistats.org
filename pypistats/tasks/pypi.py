@@ -69,9 +69,10 @@ def get_google_credentials():
     return credentials
 
 
-def get_daily_download_stats(env="dev", date="None"):
+def get_daily_download_stats(event, context):
     """Get daily download stats for pypi packages from BigQuery."""
     start = time.time()
+    env = event["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
     job_config = bigquery.QueryJobConfig()
@@ -80,7 +81,8 @@ def get_daily_download_stats(env="dev", date="None"):
         project=os.environ["GOOGLE_PROJECT_ID"],
         credentials=credentials
     )
-    if date == "None":
+    date = event.get("date", None)
+    if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
     # # Prepare a reference to the new dataset
@@ -155,8 +157,7 @@ def get_daily_download_stats(env="dev", date="None"):
 
 def update_db(df, env="dev"):
     """Update the db with new data by table."""
-    if os.environ.get("ENV", None) is None:
-        load_env_vars(env)
+    load_env_vars(env)
     connection, cursor = get_connection_cursor(env)
 
     df_groups = df.groupby("category_label")
@@ -204,16 +205,19 @@ def update_table(connection, cursor, table, df, date):
         return False
 
 
-def update_all_package_stats(env="dev", date="None"):
+def update_all_package_stats(event, context):
     """Update stats for __all__ packages."""
     print("__all__")
     start = time.time()
 
-    if date == "None":
+    date = event.get("date", None)
+    if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
+    env = event["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
+
     connection, cursor = get_connection_cursor(env)
 
     success = {}
@@ -245,16 +249,19 @@ def update_all_package_stats(env="dev", date="None"):
     return success
 
 
-def update_recent_stats(env="dev", date="None"):
+def update_recent_stats(event, context):
     """Update daily, weekly, monthly stats for all packages."""
     print("recent")
     start = time.time()
 
-    if date == "None":
+    date = event.get("date", None)
+    if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
+    env = event["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
+
     connection, cursor = get_connection_cursor(env)
 
     downloads_table = "overall"
@@ -315,16 +322,20 @@ def get_connection_cursor(env):
     return connection, cursor
 
 
-def purge_old_data(env="dev", age=MAX_RECORD_AGE, date="None"):
+def purge_old_data(event, context):
     """Purge old data records."""
     print("Purge")
+    age = MAX_RECORD_AGE
     start = time.time()
 
-    if date == "None":
+    date = event.get("date", None)
+    if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
+    env = event["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
+
     connection, cursor = get_connection_cursor(env)
 
     date = datetime.datetime.strptime(date, '%Y-%m-%d')
@@ -439,9 +450,14 @@ def get_query(date):
 
 
 if __name__ == "__main__":
-    date = "2018-04-16"
+    date = "2018-04-17"
     env = "prod"
+    event = {
+        "date": date,
+        "env": env,
+    }
+    context = None
     print(date, env)
-    print(get_daily_download_stats(env, date))
-    print(update_all_package_stats(env, date))
-    print(update_recent_stats(env, date))
+    print(get_daily_download_stats(event, context))
+    print(update_all_package_stats(event, context))
+    print(update_recent_stats(event, context))

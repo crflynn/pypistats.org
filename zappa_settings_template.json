@@ -11,22 +11,22 @@
         "events": [
             {
                 "function": "pypistats.tasks.pypi.get_daily_download_stats",
-                "kwargs": {"env": "dev", "date": "None"},
+                "kwargs": {"env": "dev"},
                 "expression": "cron(0 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.update_all_package_stats",
-                "kwargs": {"env": "dev", "date": "None"},
+                "kwargs": {"env": "dev"},
                 "expression": "cron(10 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.update_recent_stats",
-                "kwargs": {"env": "dev", "date": "None"},
+                "kwargs": {"env": "dev"},
                 "expression": "cron(15 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.purge_old_data",
-                "kwargs": {"env": "dev", "date": "None"},
+                "kwargs": {"env": "dev"},
                 "expression": "cron(20 1 * * ? *)"
             }
         ],
@@ -69,22 +69,22 @@
         "events": [
             {
                 "function": "pypistats.tasks.pypi.get_daily_download_stats",
-                "kwargs": {"env": "prod", "date": "None"},
+                "kwargs": {"env": "prod"},
                 "expression": "cron(0 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.update_all_package_stats",
-                "kwargs": {"env": "prod", "date": "None"},
+                "kwargs": {"env": "prod"},
                 "expression": "cron(10 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.update_recent_stats",
-                "kwargs": {"env": "prod", "date": "None"},
+                "kwargs": {"env": "prod"},
                 "expression": "cron(15 1 * * ? *)"
             },
             {
                 "function": "pypistats.tasks.pypi.purge_old_data",
-                "kwargs": {"env": "prod", "date": "None"},
+                "kwargs": {"env": "prod"},
                 "expression": "cron(20 1 * * ? *)"
             }
         ],
