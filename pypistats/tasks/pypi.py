@@ -72,7 +72,7 @@ def get_google_credentials():
 def get_daily_download_stats(event, context):
     """Get daily download stats for pypi packages from BigQuery."""
     start = time.time()
-    env = event["env"]
+    env = event["kwargs"]["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
     job_config = bigquery.QueryJobConfig()
@@ -81,7 +81,7 @@ def get_daily_download_stats(event, context):
         project=os.environ["GOOGLE_PROJECT_ID"],
         credentials=credentials
     )
-    date = event.get("date", None)
+    date = event["kwargs"].get("date", None)
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
@@ -210,11 +210,11 @@ def update_all_package_stats(event, context):
     print("__all__")
     start = time.time()
 
-    date = event.get("date", None)
+    date = event["kwargs"].get("date", None)
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    env = event["env"]
+    env = event["kwargs"]["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
 
@@ -254,11 +254,11 @@ def update_recent_stats(event, context):
     print("recent")
     start = time.time()
 
-    date = event.get("date", None)
+    date = event["kwargs"].get("date", None)
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    env = event["env"]
+    env = event["kwargs"]["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
 
@@ -328,11 +328,11 @@ def purge_old_data(event, context):
     age = MAX_RECORD_AGE
     start = time.time()
 
-    date = event.get("date", None)
+    date = event["kwargs"].get("date", None)
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    env = event["env"]
+    env = event["kwargs"]["env"]
     if os.environ.get("ENV", None) is None:
         load_env_vars(env)
 
@@ -450,11 +450,13 @@ def get_query(date):
 
 
 if __name__ == "__main__":
-    date = "2018-04-17"
+    date = "2018-04-18"
     env = "prod"
     event = {
-        "date": date,
-        "env": env,
+        "kwargs": {
+            "date": date,
+            "env": env,
+        }
     }
     context = None
     print(date, env)
