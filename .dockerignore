@@ -6,7 +6,6 @@ Dockerfile
 Pipfile
 Pipfile.lock
 migrations/
-zappa*
 run.sh
 docs/
 tests/
@@ -27,9 +26,3 @@ celerybeat.pid
 
 # redis
 dump.rdb
-
-# packaged deployments
-*.zip
-
-# zappa settings
-zappa_settings.json

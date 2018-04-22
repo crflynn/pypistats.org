@@ -12,15 +12,9 @@ __pycache__
 # ignore
 ignore/
 
-# packaged deployments
-*.zip
-
 # celery
 celerybeat-schedule
 celerybeat.pid
 
 # redis
 dump.rdb
-
-# zappa settings
-zappa_settings.json
