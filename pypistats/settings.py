@@ -2,6 +2,8 @@
 import json
 import os
 
+from celery.schedules import crontab
+
 
 # For local use.
 def load_env_vars(env="dev"):
@@ -10,7 +12,7 @@ def load_env_vars(env="dev"):
         os.path.dirname(os.path.abspath(__file__)),
         "secret",
         f"env_vars_{env}.json")
-    for key, value in json.load(open(local_path, 'r')).items():
+    for key, value in json.load(open(local_path, "r")).items():
         os.environ[key] = value
 
 
@@ -30,6 +32,14 @@ class Config(object):
     """Base configuration."""
 
     APP_DIR = os.path.abspath(os.path.dirname(__file__))
+    CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL"),
+    CELERY_IMPORTS = ("pypistats.tasks.pypi")
+    CELERYBEAT_SCHEDULE = {
+        "update_db": {
+            "task": "pypistats.tasks.pypi.etl",
+            "schedule": crontab(hour=1, minute=0),  # 1am UTC
+        },
+    }
     GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
     GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))

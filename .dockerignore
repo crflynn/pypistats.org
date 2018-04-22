@@ -1,6 +1,15 @@
-# credentials
-secret.*
-env_vars*
+# project
+.git
+.gitignore
+.dockerignore
+Dockerfile
+Pipfile
+Pipfile.lock
+migrations/
+zappa*
+run.sh
+docs/
+tests/
 
 # mac osx
 .DS_Store
@@ -12,15 +21,15 @@ __pycache__
 # ignore
 ignore/
 
-# packaged deployments
-*.zip
-
 # celery
 celerybeat-schedule
 celerybeat.pid
 
 # redis
 dump.rdb
+
+# packaged deployments
+*.zip
 
 # zappa settings
 zappa_settings.json

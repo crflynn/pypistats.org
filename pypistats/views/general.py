@@ -21,7 +21,6 @@ from pypistats.models.download import PythonMinorDownloadCount
 from pypistats.models.download import RECENT_CATEGORIES
 from pypistats.models.download import RecentDownloadCount
 from pypistats.models.download import SystemDownloadCount
-from sqlalchemy import distinct
 
 blueprint = Blueprint("general", __name__, template_folder="templates")
 
@@ -49,7 +48,6 @@ def index():
         return redirect(f"/search/{package}")
     package_count = \
         RecentDownloadCount.query.filter_by(category="month").count()
-    print(package_count)
     return render_template(
         "index.html",
         form=form,
@@ -104,7 +102,6 @@ def package(package):
             if metadata["info"].get("requires_dist", None):
                 metadata["requires"] = []
                 for required in metadata["info"]["requires_dist"]:
-                    print(package, re.split(r"[^0-9a-zA-Z_.-]+", required))
                     metadata["requires"].append(
                         re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
                     )
