@@ -22,7 +22,6 @@ def create_app(config_object=DevConfig):
 def create_celery(app):
     """Create a celery object."""
     celery = Celery(app.import_name, broker=app.config["CELERY_BROKER_URL"])
-    celery.conf.update(app.config)
     celery.config_from_object(app.config)
 
     class ContextTask(Task):

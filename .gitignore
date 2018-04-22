@@ -1,6 +1,7 @@
 # credentials
 secret.*
 env_vars*
+*.env
 
 # mac osx
 .DS_Store

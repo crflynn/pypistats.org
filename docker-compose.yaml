@@ -11,9 +11,8 @@ services:
   flask:
     build: .
     restart: always
-    environment:
-      - FLASK_APP=pypistats/run.py
-      - ENV=prod
+    env_file:
+      - pypistats/secret/prod.env
     command: 'flask run --host=0.0.0.0'
     ports:
       - '5000:5000'
@@ -21,6 +20,8 @@ services:
   celery:
     build: .
     restart: always
+    env_file:
+      - pypistats/secret/prod.env
     command: 'celery -A pypistats.run.celery worker -l info'
     user: nobody
     depends_on:
@@ -29,6 +30,8 @@ services:
   beat:
     build: .
     restart: always
-    command: 'celery beat -A pypistats.run.celery -l info'
+    env_file:
+      - pypistats/secret/prod.env
+    command: 'celery beat -A pypistats.run.celery -l info --pidfile='
     depends_on:
       - redis

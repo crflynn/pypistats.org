@@ -11,11 +11,12 @@ from pypistats.settings import configs
 
 
 # change this for migrations
-env = os.environ.get("ENV", "dev")
+env = os.environ.get("ENV", "prod")
 
-print(env)
 app = create_app(configs[env])
 celery = create_celery(app)
+
+app.logger.info(f"Environment: {env}")
 
 
 @app.before_request
