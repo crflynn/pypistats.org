@@ -1,3 +1,5 @@
-export FLASK_APP=pypistats/run.py
-export FLASK_DEBUG=1
+export ENV=prod
+set -o allexport
+source pypistats/secret/$ENV.env
+set +o allexport
 flask run --host=0.0.0.0

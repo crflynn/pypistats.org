@@ -1,19 +1,7 @@
 """Application configuration."""
-import json
 import os
 
 from celery.schedules import crontab
-
-
-# For local use.
-def load_env_vars(env="dev"):
-    """Load environment variables."""
-    local_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "secret",
-        f"env_vars_{env}.json")
-    for key, value in json.load(open(local_path, "r")).items():
-        os.environ[key] = value
 
 
 def get_db_uri(env):
@@ -52,8 +40,6 @@ class ProdConfig(Config):
 
     DEBUG = False
     ENV = "prod"
-    if os.environ.get("ENV", None) is None:
-        load_env_vars(ENV)
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
 
 
@@ -62,8 +48,6 @@ class DevConfig(Config):
 
     DEBUG = True
     ENV = "dev"
-    if os.environ.get("ENV", None) is None:
-        load_env_vars(ENV)
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
 
 
@@ -72,8 +56,6 @@ class TestConfig(Config):
 
     DEBUG = True
     ENV = "dev"
-    if os.environ.get("ENV", None) is None:
-        load_env_vars(ENV)
     SQLALCHEMY_DATABASE_URI = get_db_uri(ENV)
     TESTING = True
     WTF_CSRF_ENABLED = False  # Allows form testing

@@ -11,7 +11,7 @@ from pypistats.settings import configs
 
 
 # change this for migrations
-env = os.environ.get("ENV", "prod")
+env = os.environ.get("ENV", "dev")
 
 app = create_app(configs[env])
 celery = create_celery(app)
