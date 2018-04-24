@@ -8,17 +8,17 @@ name = "pypi"
 [packages]
 
 google-cloud-bigquery = "*"
-pandas = "*"
 "psycopg2" = "*"
-flask = "*"
-github-flask = "*"
+Flask = "*"
+GitHub-Flask = "*"
 flask-sqlalchemy = "*"
-flask-migrate = "*"
-flask-login = "*"
-flask-wtf = "*"
+Flask-Migrate = "*"
+Flask-Login = "*"
+Flask-WTF = "*"
 celery = "*"
 redis = "*"
 
 
 [dev-packages]
 
+awsebcli = "*"

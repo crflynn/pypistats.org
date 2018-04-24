@@ -6,7 +6,7 @@ Dockerfile
 Pipfile
 Pipfile.lock
 migrations/
-run.sh
+README.rst
 docs/
 tests/
 
