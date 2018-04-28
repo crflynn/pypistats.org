@@ -3,11 +3,9 @@
 .gitignore
 .dockerignore
 Dockerfile
-Pipfile
-Pipfile.lock
-migrations/
 README.rst
 docs/
+migrations/
 tests/
 
 # mac osx
@@ -26,3 +24,8 @@ celerybeat.pid
 
 # redis
 dump.rdb
+
+# Elastic Beanstalk Files
+.elasticbeanstalk
+.git
+.gitignore

@@ -1,5 +1,11 @@
-# credentials
-*.env
+# project
+.git
+.gitignore
+.dockerignore
+README.rst
+docs/
+migrations/
+tests/
 
 # mac osx
 .DS_Store
@@ -20,5 +26,5 @@ dump.rdb
 
 # Elastic Beanstalk Files
 .elasticbeanstalk
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
+.git
+.gitignore

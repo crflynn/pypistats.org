@@ -2,4 +2,4 @@ export ENV=prod
 set -o allexport
 source pypistats/secret/$ENV.env
 set +o allexport
-celery -A pypistats.run.celery worker -l info
+pipenv run flask run --host=0.0.0.0

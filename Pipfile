@@ -9,14 +9,15 @@ name = "pypi"
 
 google-cloud-bigquery = "*"
 "psycopg2" = "*"
-Flask = "*"
-GitHub-Flask = "*"
+flask = "*"
+github-flask = "*"
 flask-sqlalchemy = "*"
-Flask-Migrate = "*"
-Flask-Login = "*"
-Flask-WTF = "*"
+flask-migrate = "*"
+flask-login = "*"
+flask-wtf = "*"
 celery = "*"
 redis = "*"
+flask-sslify = "*"
 
 
 [dev-packages]
