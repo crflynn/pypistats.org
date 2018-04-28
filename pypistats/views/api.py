@@ -23,7 +23,7 @@ def api():
     return render_template("api.html", user=g.user)
 
 
-@blueprint.route("/<package>/recent")
+@blueprint.route("/package/<package>/recent")
 def api_downloads_recent(package):
     """Get the recent downloads of a package."""
     category = request.args.get('period')
@@ -50,7 +50,7 @@ def api_downloads_recent(package):
     return jsonify(response)
 
 
-@blueprint.route("/<package>/overall")
+@blueprint.route("/package/<package>/overall")
 def api_downloads_overall(package):
     """Get the overall download time series of a package."""
     mirrors = request.args.get('mirrors')
@@ -81,21 +81,21 @@ def api_downloads_overall(package):
     return jsonify(response)
 
 
-@blueprint.route("/<package>/python_major")
+@blueprint.route("/package/<package>/python_major")
 def api_downloads_python_major(package):
     """Get the python major download time series of a package."""
     return generic_downloads(
         PythonMajorDownloadCount, package, "version", "python_major")
 
 
-@blueprint.route("/<package>/python_minor")
+@blueprint.route("/package/<package>/python_minor")
 def api_downloads_python_minor(package):
     """Get the python minor download time series of a package."""
     return generic_downloads(
         PythonMinorDownloadCount, package, "version", "python_minor")
 
 
-@blueprint.route("/<package>/system")
+@blueprint.route("/package/<package>/system")
 def api_downloads_system(package):
     """Get the system download time series of a package."""
     return generic_downloads(
