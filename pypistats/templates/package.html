@@ -52,20 +52,20 @@
                         {% if not loop.last %}|{% endif %}
                     {% endfor %}
                 {% endif %}
-                <br><br>
-                Downloads last day:
-                {{"{:,.0f}".format(recent['day'])}}
-                <br>
-                Downloads last week:
-                {{"{:,.0f}".format(recent['week'])}}
-                <br>
-                Downloads last month:
-                {{"{:,.0f}".format(recent['month'])}}
             {% else %}
                 No metadata found.
-                {%endif%}
-            </p>
-        {% endif %}
+            {%endif%}
+            <br><br>
+            Downloads last day:
+            {{"{:,.0f}".format(recent['day'])}}
+            <br>
+            Downloads last week:
+            {{"{:,.0f}".format(recent['week'])}}
+            <br>
+            Downloads last month:
+            {{"{:,.0f}".format(recent['month'])}}
+        </p>
+    {% endif %}
         <script>
 
             (function () {
