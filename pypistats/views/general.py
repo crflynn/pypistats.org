@@ -130,7 +130,7 @@ def package(package):
         plot = deepcopy(plot_base)
         data = []
         for category, values in model["data"].items():
-            base = deepcopy(data_base)
+            base = deepcopy(data_base["data"][0])
             base["x"] = values["x"]
             base["y"] = values["y"]
             base["name"] = category.title()
