@@ -25,7 +25,7 @@ class Config(object):
     CELERYBEAT_SCHEDULE = {
         "update_db": {
             "task": "pypistats.tasks.pypi.etl",
-            "schedule": crontab(hour=1, minute=0),  # 1am UTC
+            "schedule": crontab(minute=0, hour=1),  # 1am UTC
         },
     }
     GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")

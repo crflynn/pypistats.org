@@ -18,6 +18,7 @@ flask-wtf = "*"
 celery = "*"
 redis = "*"
 flask-sslify = "*"
+gunicorn = "*"
 
 
 [dev-packages]

@@ -61,6 +61,7 @@ def get_daily_download_stats(env="dev", date=None):
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
+    print(date)
     print("Sending query to BigQuery...")
     query = get_query(date)
     print("Sent.")
@@ -374,7 +375,7 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-04-27"
+    date = "2018-04-28"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))

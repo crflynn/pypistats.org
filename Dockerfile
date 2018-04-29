@@ -4,8 +4,6 @@ RUN pip install pipenv
 
 ENV WORKON_HOME=/venv
 
-RUN mkdir /var/log/pypistats
-
 WORKDIR /app
 
 ADD Pipfile /app
