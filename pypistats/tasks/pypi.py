@@ -82,13 +82,13 @@ def get_daily_download_stats(env="dev", date=None):
             row["downloads"],
         ])
 
-    results = update_db(data, env)
+    results = update_db(data, env, date)
     print("Elapsed: " + str(time.time() - start))
     results["elapsed"] = time.time() - start
     return results
 
 
-def update_db(data, env="dev"):
+def update_db(data, env="dev", date=None):
     """Update the db with new data by table."""
     connection, cursor = get_connection_cursor(env)
 
@@ -365,17 +365,19 @@ def get_query(date):
 @celery.task
 def etl():
     """Perform the stats download."""
+    env = os.environ.get("ENV")
+    date = str(datetime.date.today() - datetime.timedelta(days=1))
     results = {
-        "downloads": get_daily_download_stats(),
-        "__all__": update_all_package_stats(),
-        "recent": update_recent_stats(),
-        "purge": purge_old_data(),
+        "downloads": get_daily_download_stats(env, date),
+        "__all__": update_all_package_stats(env, date),
+        "recent": update_recent_stats(env, date),
+        "purge": purge_old_data(env, date),
     }
     return results
 
 
 if __name__ == "__main__":
-    date = "2018-04-28"
+    date = "2018-04-29"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))
