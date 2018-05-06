@@ -96,7 +96,7 @@ def user():
     return render_template("user.html", user=g.user)
 
 
-@blueprint.route("/user/package/<package>")
+@blueprint.route("/user/packages/<package>")
 def user_package(package):
     """Handle adding and deleting packages to user's list."""
     if g.user:

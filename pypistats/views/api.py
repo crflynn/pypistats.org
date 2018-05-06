@@ -23,7 +23,7 @@ def api():
     return render_template("api.html", user=g.user)
 
 
-@blueprint.route("/package/<package>/recent")
+@blueprint.route("/packages/<package>/recent")
 def api_downloads_recent(package):
     """Get the recent downloads of a package."""
     category = request.args.get('period')
@@ -50,7 +50,7 @@ def api_downloads_recent(package):
     return jsonify(response)
 
 
-@blueprint.route("/package/<package>/overall")
+@blueprint.route("/packages/<package>/overall")
 def api_downloads_overall(package):
     """Get the overall download time series of a package."""
     mirrors = request.args.get('mirrors')
@@ -81,21 +81,21 @@ def api_downloads_overall(package):
     return jsonify(response)
 
 
-@blueprint.route("/package/<package>/python_major")
+@blueprint.route("/packages/<package>/python_major")
 def api_downloads_python_major(package):
     """Get the python major download time series of a package."""
     return generic_downloads(
         PythonMajorDownloadCount, package, "version", "python_major")
 
 
-@blueprint.route("/package/<package>/python_minor")
+@blueprint.route("/packages/<package>/python_minor")
 def api_downloads_python_minor(package):
     """Get the python minor download time series of a package."""
     return generic_downloads(
         PythonMinorDownloadCount, package, "version", "python_minor")
 
 
-@blueprint.route("/package/<package>/system")
+@blueprint.route("/packages/<package>/system")
 def api_downloads_system(package):
     """Get the system download time series of a package."""
     return generic_downloads(
@@ -126,26 +126,26 @@ def generic_downloads(model, package, arg, name):
 
     return jsonify(response)
 
-
-@blueprint.route("/top/overall")
-def api_top_packages():
-    """Get the most downloaded packages by recency."""
-    return "top overall"
-
-
-@blueprint.route("/top/python_major")
-def api_top_python_major():
-    """Get the most downloaded packages by python major version."""
-    return "top python_major"
-
-
-@blueprint.route("/top/python_minor")
-def api_top_python_minor():
-    """Get the most downloaded packages by python minor version."""
-    return "top python_minor"
-
-
-@blueprint.route("/top/system")
-def api_top_system():
-    """Get the most downloaded packages by system."""
-    return "top python_minor"
+# TODO
+# @blueprint.route("/top/overall")
+# def api_top_packages():
+#     """Get the most downloaded packages by recency."""
+#     return "top overall"
+#
+#
+# @blueprint.route("/top/python_major")
+# def api_top_python_major():
+#     """Get the most downloaded packages by python major version."""
+#     return "top python_major"
+#
+#
+# @blueprint.route("/top/python_minor")
+# def api_top_python_minor():
+#     """Get the most downloaded packages by python minor version."""
+#     return "top python_minor"
+#
+#
+# @blueprint.route("/top/system")
+# def api_top_system():
+#     """Get the most downloaded packages by system."""
+#     return "top python_minor"

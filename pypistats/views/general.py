@@ -80,7 +80,7 @@ def about():
     return render_template("about.html", user=g.user)
 
 
-@blueprint.route("/package/<package>")
+@blueprint.route("/packages/<package>")
 def package(package):
     """Render the package page."""
     # Recent download stats
