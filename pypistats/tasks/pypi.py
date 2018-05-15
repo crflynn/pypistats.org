@@ -271,6 +271,25 @@ def purge_old_data(env="dev", date=None):
     return success
 
 
+def vacuum_analyze(env="dev"):
+    """Vacuum and analyze the db."""
+    connection, cursor = get_connection_cursor(env)
+    connection.set_isolation_level(0)
+
+    results = {}
+    start = time.time()
+    cursor.query("VACUUM")
+    results["vacuum"] = time.time() - start
+
+    start = time.time()
+    cursor.query("ANALYZE")
+    results["analyze"] = time.time() - start
+
+    print(results)
+    return results
+
+
+
 def get_query(date):
     """Get the query to execute against pypistats on bigquery."""
     return f"""
@@ -373,6 +392,7 @@ def etl():
         "recent": update_recent_stats(env, date),
         "purge": purge_old_data(env, date),
     }
+    results["cleanup"] vacuum_analyze(env)
     return results
 
 
