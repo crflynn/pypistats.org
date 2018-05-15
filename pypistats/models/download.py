@@ -10,7 +10,9 @@ class OverallDownloadCount(Model):
     __tablename__ = "overall"
 
     date = Column(db.Date, primary_key=True, nullable=False)
-    package = Column(db.String(128), primary_key=True, nullable=False)
+    package = Column(
+        db.String(128), primary_key=True, nullable=False, index=True
+    )
     # with_mirrors or without_mirrors
     category = Column(db.String(16), primary_key=True, nullable=False)
     downloads = Column(db.Integer(), nullable=False)
@@ -27,7 +29,9 @@ class PythonMajorDownloadCount(Model):
     __tablename__ = "python_major"
 
     date = Column(db.Date, primary_key=True, nullable=False)
-    package = Column(db.String(128), primary_key=True, nullable=False)
+    package = Column(
+        db.String(128), primary_key=True, nullable=False, index=True
+    )
     # python_major version, 2 or 3 (or null)
     category = Column(db.String(4), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
@@ -44,7 +48,9 @@ class PythonMinorDownloadCount(Model):
     __tablename__ = "python_minor"
 
     date = Column(db.Date, primary_key=True)
-    package = Column(db.String(128), primary_key=True, nullable=False)
+    package = Column(
+        db.String(128), primary_key=True, nullable=False, index=True
+    )
     # python_minor version, e.g. 2.7 or 3.6 (or null)
     category = Column(db.String(4), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
@@ -63,7 +69,9 @@ class RecentDownloadCount(Model):
 
     __tablename__ = "recent"
 
-    package = Column(db.String(128), primary_key=True, nullable=False)
+    package = Column(
+        db.String(128), primary_key=True, nullable=False, index=True
+    )
     # recency, e.g. day, week, month
     category = Column(db.String(8), primary_key=True, nullable=False)
     downloads = Column(db.BigInteger(), nullable=False)
@@ -80,7 +88,9 @@ class SystemDownloadCount(Model):
     __tablename__ = "system"
 
     date = Column(db.Date, primary_key=True)
-    package = Column(db.String(128), primary_key=True, nullable=False)
+    package = Column(
+        db.String(128), primary_key=True, nullable=False, index=True
+    )
     # system, e.g. Windows or Linux or Darwin (or null)
     category = Column(db.String(8), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
