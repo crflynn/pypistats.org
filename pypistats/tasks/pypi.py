@@ -392,7 +392,7 @@ def etl():
         "recent": update_recent_stats(env, date),
         "purge": purge_old_data(env, date),
     }
-    results["cleanup"] vacuum_analyze(env)
+    results["cleanup"] = vacuum_analyze(env)
     return results
 
 
