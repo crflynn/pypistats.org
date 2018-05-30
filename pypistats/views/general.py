@@ -45,7 +45,7 @@ def index():
     form = MyForm()
     if form.validate_on_submit():
         package = form.name.data
-        return redirect(f"/search/{package}")
+        return redirect(f"/search/{package.lower()}")
     package_count = \
         RecentDownloadCount.query.filter_by(category="month").count()
     return render_template(
