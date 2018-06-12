@@ -296,11 +296,11 @@ def vacuum_analyze(env="dev"):
 
     results = {}
     start = time.time()
-    cursor.query("VACUUM")
+    cursor.execute("VACUUM")
     results["vacuum"] = time.time() - start
 
     start = time.time()
-    cursor.query("ANALYZE")
+    cursor.execute("ANALYZE")
     results["analyze"] = time.time() - start
 
     print(results)
@@ -421,3 +421,4 @@ if __name__ == "__main__":
     print(get_daily_download_stats(env, date))
     print(update_all_package_stats(env, date))
     print(update_recent_stats(env, date))
+    vacuum_analyze(env)
