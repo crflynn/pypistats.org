@@ -106,10 +106,28 @@ def update_table(connection, cursor, table, rows, date):
     """Update a table."""
     print(table)
 
-    for row in rows:
+    delete_rows = []
+    for row_idx, row in enumerate(rows):
         for idx, item in enumerate(row):
             if item is None:
                 row[idx] = "null"
+            else:
+                # Some hacky packages have long names; ignore them
+                if len(str(item)) > 128:
+                    delete_rows.append(row_idx)
+                    print(row)
+
+    # Some packages have installs with empty (non-null) python version; ignore
+    if table in ("python_major", "python_minor"):
+        for idx, row in enumerate(rows):
+            if row[2] in ("", "."):
+                delete_rows.append(idx)
+                print(row)
+
+    print(delete_rows)
+    # Delete ignored rows
+    for idx in sorted(delete_rows, reverse=True):
+        rows.pop(idx)
 
     delete_query = \
         f"""DELETE FROM {table}
@@ -397,7 +415,7 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-04-29"
+    date = "2018-06-06"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))
