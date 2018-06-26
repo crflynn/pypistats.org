@@ -22,7 +22,7 @@ SYSTEMS = ("Windows", "Linux", "Darwin")
 PSQL_TABLES = ["overall", "python_major", "python_minor", "system"]
 
 # Number of days to retain records
-MAX_RECORD_AGE = 90
+MAX_RECORD_AGE = 120
 
 
 def get_google_credentials():
