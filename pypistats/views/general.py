@@ -33,6 +33,15 @@ MODELS = [
 ]
 
 
+# Plotly chart definitions
+PLOT_BASE = json.load(
+    open(os.path.join(current_app.root_path, 'plots', 'plot_base.json'))
+)
+DATA_BASE = json.load(
+    open(os.path.join(current_app.root_path, 'plots', 'data_base.json'))
+)
+
+
 class MyForm(FlaskForm):
     """Search form."""
 
@@ -116,21 +125,13 @@ def package(package):
             "data": get_download_data(package, model),
         })
 
-    # Plotly chart definitions
-    plot_base = json.load(
-        open(os.path.join(current_app.root_path, 'plots', 'plot_base.json'))
-    )
-    data_base = json.load(
-        open(os.path.join(current_app.root_path, 'plots', 'data_base.json'))
-    )
-
     # Build the plots
     plots = []
     for model in model_data:
-        plot = deepcopy(plot_base)
+        plot = deepcopy(PLOT_BASE)
         data = []
         for category, values in model["data"].items():
-            base = deepcopy(data_base["data"][0])
+            base = deepcopy(DATA_BASE["data"][0])
             base["x"] = values["x"]
             base["y"] = values["y"]
             base["name"] = category.title()
