@@ -2,6 +2,7 @@
 import os
 
 from celery.schedules import crontab
+from flask import json
 
 
 def get_db_uri(env):
@@ -33,6 +34,15 @@ class Config(object):
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     SECRET_KEY = os.environ.get("PYPISTATS_SECRET", "secret-key")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Plotly chart definitions
+    PLOT_BASE = json.load(
+        open(os.path.join(os.path.dirname(__file__), "plots", "plot_base.json"))
+    )
+    DATA_BASE = json.load(
+        open(os.path.join(os.path.dirname(__file__), "plots", "data_base.json"))
+    )
+
 
 
 class ProdConfig(Config):
