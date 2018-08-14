@@ -22,7 +22,7 @@ SYSTEMS = ("Windows", "Linux", "Darwin")
 PSQL_TABLES = ["overall", "python_major", "python_minor", "system"]
 
 # Number of days to retain records
-MAX_RECORD_AGE = 120
+MAX_RECORD_AGE = 180
 
 
 def get_google_credentials():
@@ -415,7 +415,7 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-06-06"
+    date = "2018-07-28"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))
