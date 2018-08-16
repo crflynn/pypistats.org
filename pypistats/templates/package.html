@@ -30,19 +30,20 @@
                 <br>
                 Author:
                 {{metadata['info']['author']}}
+                {% if metadata['info']['license'] is not none %}
                 <br>
                 License:
-                {% if metadata['info']['license'] | length > 200 %}
-
-                    {{metadata['info']['license'][:200]}}...
-                {% else %}
-                    {{metadata['info']['license']}}
+                    {% if metadata['info']['license'] | length > 200 %}
+                       {{metadata['info']['license'][:200]}}...
+                   {% else %}
+                       {{metadata['info']['license']}}
+                   {% endif %}
                 {% endif %}
                 <br>
-                Summary :
+                Summary:
                 {{metadata['info']['summary']}}
                 <br>
-                Latest version :
+                Latest version:
                 {{metadata['info']['version']}}
                 <br>
                 {% if metadata['requires'] %}
