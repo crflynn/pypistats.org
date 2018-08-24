@@ -80,6 +80,12 @@ def about():
     return render_template("about.html", user=g.user)
 
 
+@blueprint.route("/faqs")
+def faqs():
+    """Render the FAQs page."""
+    return render_template("faqs.html", user=g.user)
+
+
 @blueprint.route("/packages/<package>")
 def package(package):
     """Render the package page."""
