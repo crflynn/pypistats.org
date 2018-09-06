@@ -16,7 +16,7 @@ from pypistats.settings import configs
 env = os.environ.get("ENV", "dev")
 
 app = create_app(configs[env])
-# sslify = SSLify(app)
+sslify = SSLify(app)
 celery = create_celery(app)
 
 app.logger.info(f"Environment: {env}")
