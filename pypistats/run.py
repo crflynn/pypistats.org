@@ -7,6 +7,7 @@ from flask_sslify import SSLify
 
 from pypistats.application import create_app
 from pypistats.application import create_celery
+from pypistats.extensions import db
 from pypistats.models.user import User
 from pypistats.settings import configs
 
@@ -15,7 +16,7 @@ from pypistats.settings import configs
 env = os.environ.get("ENV", "dev")
 
 app = create_app(configs[env])
-sslify = SSLify(app)
+# sslify = SSLify(app)
 celery = create_celery(app)
 
 app.logger.info(f"Environment: {env}")
@@ -27,3 +28,5 @@ def before_request():
     g.user = None
     if "user_id" in session:
         g.user = User.query.get(session["user_id"])
+    if "db" not in g:
+        g.db = db

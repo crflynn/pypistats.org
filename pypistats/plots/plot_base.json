@@ -1,78 +1,156 @@
 {
-  "layout": {
-    "autosize": true,
-    "height": 400,
-    "margin": {
-      "r": 100,
-      "t": 40,
-      "autoexpand": true,
-      "b": 80,
-      "l": 100,
-      "pad": 0
+    "downloads":{
+        "layout":{
+            "autosize":true,
+            "height":400,
+            "margin":{
+                "r":100,
+                "t":40,
+                "autoexpand":true,
+                "b":80,
+                "l":100,
+                "pad":0
+            },
+            "paper_bgcolor":"#fff",
+            "plot_bgcolor":"rgba(175, 175, 175, 0.2)",
+            "showlegend":true,
+            "legend":{
+                "orientation":"v",
+                "bgcolor":"#e7e7e7",
+                "xanchor":"left",
+                "yanchor":"middle",
+                "x":0,
+                "y":0.5
+            },
+            "title":"Downloads",
+            "xaxis":{
+                "tickformat":"%m-%d",
+                "dtick":604800000,
+                "tick0":"2017-08-07",
+                "gridcolor":"#FFF",
+                "gridwidth":2,
+                "anchor":"y",
+                "domain":[
+                    0,
+                    1
+                ],
+                "title":"Date",
+                "titlefont":{
+                    "family":"'Geneva', Verdana, Geneva, sans-serif",
+                    "size":16,
+                    "color":"#7f7f7f"
+                },
+                "showline":true,
+                "linecolor":"rgba(148, 148, 148, 1)",
+                "linewidth":2,
+                "tickangle":-45
+            },
+            "yaxis":{
+                "hoverformat":",.0",
+                "tickformat":",.0",
+                "gridcolor":"#FFF",
+                "gridwidth":2,
+                "autotick":true,
+                "rangemode":"tozero",
+                "showline":true,
+                "title":"Downloads",
+                "ticksuffix":"",
+                "tickmode":"auto",
+                "linecolor":"rgba(148, 148, 148, 1)",
+                "linewidth":2
+            }
+        },
+        "config":{
+            "displaylogo":false,
+            "modeBarButtonsToRemove":[
+                "toImage",
+                "sendDataToCloud",
+                "zoom2d",
+                "pan2d",
+                "select2d",
+                "lasso2d",
+                "zoomIn2d",
+                "zoomOut2d",
+                "toggleSpikelines"
+            ]
+        }
     },
-    "paper_bgcolor": "#fff",
-    "plot_bgcolor": "rgba(175, 175, 175, 0.2)",
-    "showlegend": true,
-    "legend": {
-      "orientation": "v",
-      "bgcolor": "#e7e7e7",
-      "xanchor": "left",
-      "yanchor": "middle",
-      "x": 0,
-      "y": 0.5
-    },
-    "title": "Downloads",
-    "yaxis": {
-    },
-    "xaxis": {
-      "tickformat": "%m-%d",
-      "dtick": 604800000,
-      "tick0": "2017-08-07",
-      "gridcolor": "#FFF",
-      "gridwidth": 2,
-      "anchor": "y",
-      "domain": [
-        0,
-        1
-      ],
-      "title": "Date",
-      "titlefont": {
-        "family": "'Geneva', Verdana, Geneva, sans-serif",
-        "size": 16,
-        "color": "#7f7f7f"
-      },
-      "showline": true,
-      "linecolor": "rgba(148, 148, 148, 1)",
-      "linewidth": 2,
-      "tickangle": -45
-    },
-    "yaxis": {
-      "hoverformat": ",.0",
-      "tickformat": ",.0",
-      "gridcolor": "#FFF",
-      "gridwidth": 2,
-      "autotick": true,
-      "rangemode": "tozero",
-      "showline": true,
-      "title": "Downloads",
-      "ticksuffix": "",
-      "tickmode": "auto",
-      "linecolor": "rgba(148, 148, 148, 1)",
-      "linewidth": 2
+    "percentages":{
+        "layout":{
+            "autosize":true,
+            "height":400,
+            "margin":{
+                "r":100,
+                "t":40,
+                "autoexpand":true,
+                "b":80,
+                "l":100,
+                "pad":0
+            },
+            "paper_bgcolor":"#fff",
+            "plot_bgcolor":"rgba(175, 175, 175, 0.2)",
+            "showlegend":true,
+            "legend":{
+                "orientation":"v",
+                "bgcolor":"#e7e7e7",
+                "xanchor":"left",
+                "yanchor":"middle",
+                "x":0,
+                "y":0.5
+            },
+            "title":"Proportional Downloads",
+            "xaxis":{
+                "tickformat":"%m-%d",
+                "dtick":604800000,
+                "tick0":"2017-08-07",
+                "gridcolor":"#FFF",
+                "gridwidth":2,
+                "anchor":"y",
+                "domain":[
+                    0,
+                    1
+                ],
+                "title":"Date",
+                "titlefont":{
+                    "family":"'Geneva', Verdana, Geneva, sans-serif",
+                    "size":16,
+                    "color":"#7f7f7f"
+                },
+                "showline":true,
+                "linecolor":"rgba(148, 148, 148, 1)",
+                "linewidth":2,
+                "tickangle":-45
+            },
+            "yaxis":{
+                "range":[
+                    0,
+                    100
+                ],
+                "dtick":20,
+                "gridcolor":"#FFF",
+                "gridwidth":2,
+                "autotick":false,
+                "showline":true,
+                "title":"Proportional Downloads",
+                "ticksuffix":"%",
+                "tickmode":"auto",
+                "linecolor":"rgba(148, 148, 148, 1)",
+                "linewidth":2
+            }
+        },
+        "config":{
+            "displaylogo":false,
+            "modeBarButtonsToRemove":[
+                "toImage",
+                "sendDataToCloud",
+                "zoom2d",
+                "pan2d",
+                "select2d",
+                "lasso2d",
+                "zoomIn2d",
+                "zoomOut2d",
+                "toggleSpikelines"
+            ]
+        }
     }
-  },
-  "config": {
-    "displaylogo": false,
-    "modeBarButtonsToRemove": [
-      "toImage",
-      "sendDataToCloud",
-      "zoom2d",
-      "pan2d",
-      "select2d",
-      "lasso2d",
-      "zoomIn2d",
-      "zoomOut2d",
-      "toggleSpikelines"
-    ]
-  }
 }

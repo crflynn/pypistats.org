@@ -1,4 +1,5 @@
 """General pages."""
+from collections import defaultdict
 from copy import deepcopy
 import os
 import re
@@ -12,6 +13,9 @@ from flask import redirect
 from flask import render_template
 from flask_wtf import FlaskForm
 import requests
+from sqlalchemy import and_
+from sqlalchemy import func
+from sqlalchemy.sql.expression import label
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
@@ -117,27 +121,35 @@ def package(package):
     # Get data from db
     model_data = []
     for model in MODELS:
-        model_data.append({
-            "name": model.__tablename__,
-            "data": get_download_data(package, model),
-        })
+        if model == OverallDownloadCount:
+            metrics = ["downloads"]
+        else:
+            metrics = ["downloads", "percentages"]
+
+        for metric in metrics:
+            model_data.append({
+                "metric": metric,
+                "name": model.__tablename__,
+                "data": data_function[metric](package, model),
+            })
 
     # Build the plots
     plots = []
     for model in model_data:
-        plot = deepcopy(current_app.config["PLOT_BASE"])
+        plot = deepcopy(current_app.config["PLOT_BASE"])[model["metric"]]
         data = []
         for category, values in model["data"].items():
-            base = deepcopy(current_app.config["DATA_BASE"]["data"][0])
+            base = deepcopy(current_app.config["DATA_BASE"][model["metric"]]["data"][0])
             base["x"] = values["x"]
             base["y"] = values["y"]
+            if model["metric"] == "percentages":
+                base["text"] = values["text"]
             base["name"] = category.title()
             data.append(base)
         plot["data"] = data
         plot["layout"]["title"] = \
             f"Downloads of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         plots.append(plot)
-
     return render_template(
         "package.html",
         package=package,
@@ -146,7 +158,6 @@ def package(package):
         recent=recent,
         user=g.user
     )
-
 
 def get_download_data(package, model):
     """Get the download data for a package - model."""
@@ -161,6 +172,47 @@ def get_download_data(package, model):
         data[category]["x"].append(str(record.date))
         data[category]["y"].append(record.downloads)
     return data
+
+def get_proportion_data(package, model):
+    totals = g.db.session.query(
+        model.date,
+        model.package,
+        func.sum(model.downloads).label("totals")
+    ).filter_by(package=package).group_by(model.date, model.package).subquery()
+
+    records = g.db.session.query(
+        model.date,
+        model.package,
+        model.category,
+        model.downloads,
+        label("percentages", 100.0 * model.downloads / totals.c.totals)
+    ).join(
+        totals,
+        and_(
+            model.date == totals.c.date,
+            model.package == totals.c.package
+        )
+    ).order_by(model.category, model.date).all()
+
+    data = {}
+    cumsum = defaultdict(float)
+    for record in records:
+        date = str(record.date)
+        category = record.category
+        if category not in data:
+            data[category] = {"x": [], "y": [], "text": []}
+        data[category]["x"].append(date)
+        value = getattr(record, "percentages") or 0
+        cumsum[date] += value
+        data[category]["y"].append(cumsum[date])
+        data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(record.downloads))
+    return data
+
+
+data_function = {
+    "downloads": get_download_data,
+    "percentages": get_proportion_data,
+}
 
 
 @blueprint.route("/top")
