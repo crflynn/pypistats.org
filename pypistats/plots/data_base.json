@@ -1,32 +1,66 @@
 {
-  "data": [
-    {
-      "x": [
-        "2017-05-01",
-        "2017-05-02",
-        "2017-05-03"
-      ],
-      "y": [
-        "2",
-        "5",
-        "4"
-      ],
-      "name": "Retention",
-      "type": "scatter",
-      "mode": "lines+markers",
-      "connectgaps": true,
-      "marker": {
-        "symbol": "circle",
-        "line": {
-          "color": "#444",
-          "width": 1
-        }
-      },
-      "line": {
-        "shape": "linear",
-        "smoothing": 1,
-        "width": 2
-      }
+    "downloads":{
+        "data":[
+            {
+                "x":[
+                    "2017-05-01",
+                    "2017-05-02",
+                    "2017-05-03"
+                ],
+                "y":[
+                    "2",
+                    "5",
+                    "4"
+                ],
+                "name":"Downloads",
+                "type":"scatter",
+                "mode":"lines+markers",
+                "connectgaps":true,
+                "marker":{
+                    "symbol":"circle",
+                    "line":{
+                        "color":"#444",
+                        "width":1
+                    }
+                },
+                "line":{
+                    "shape":"linear",
+                    "smoothing":1,
+                    "width":2
+                }
+            }
+        ]
+    },
+    "percentages":{
+        "data":[
+            {
+                "x":[
+                    "2017-05-01",
+                    "2017-05-02",
+                    "2017-05-03"
+                ],
+                "y":[
+                    "2",
+                    "5",
+                    "4"
+                ],
+                "text":[
+                    "2",
+                    "5",
+                    "4"
+                ],
+                "hoverinfo": "x+text+name",
+                "name":"Downloads",
+                "type":"scatter",
+                "mode":"lines",
+                "connectgaps":false,
+                "line":{
+                    "shape":"linear",
+                    "smoothing":1,
+                    "width":2
+                },
+                "fill":"tonexty"
+            }
+        ]
     }
-  ]
 }

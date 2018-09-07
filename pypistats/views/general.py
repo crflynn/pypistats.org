@@ -1,5 +1,7 @@
 """General pages."""
+from collections import defaultdict
 from copy import deepcopy
+import datetime
 import os
 import re
 
@@ -117,27 +119,39 @@ def package(package):
     # Get data from db
     model_data = []
     for model in MODELS:
-        model_data.append({
-            "name": model.__tablename__,
-            "data": get_download_data(package, model),
-        })
+        records = model.query.filter_by(package=package).\
+            order_by(model.date,
+                     model.category).all()
+
+        if model == OverallDownloadCount:
+            metrics = ["downloads"]
+        else:
+            metrics = ["downloads", "percentages"]
+
+        for metric in metrics:
+            model_data.append({
+                "metric": metric,
+                "name": model.__tablename__,
+                "data": data_function[metric](records),
+            })
 
     # Build the plots
     plots = []
     for model in model_data:
-        plot = deepcopy(current_app.config["PLOT_BASE"])
+        plot = deepcopy(current_app.config["PLOT_BASE"])[model["metric"]]
         data = []
         for category, values in model["data"].items():
-            base = deepcopy(current_app.config["DATA_BASE"]["data"][0])
+            base = deepcopy(current_app.config["DATA_BASE"][model["metric"]]["data"][0])
             base["x"] = values["x"]
             base["y"] = values["y"]
+            if model["metric"] == "percentages":
+                base["text"] = values["text"]
             base["name"] = category.title()
             data.append(base)
         plot["data"] = data
         plot["layout"]["title"] = \
             f"Downloads of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         plots.append(plot)
-
     return render_template(
         "package.html",
         package=package,
@@ -148,19 +162,118 @@ def package(package):
     )
 
 
-def get_download_data(package, model):
-    """Get the download data for a package - model."""
-    records = model.query.filter_by(package=package).\
-        order_by(model.category,
-                 model.date).all()
-    data = {}
+def get_download_data(records):
+    """Organize the data for the absolute plots."""
+    data = defaultdict(lambda: {"x": [], "y": []})
+
+    date_categories = []
+    all_categories = []
+
+    prev_date = records[0].date
+
     for record in records:
-        category = record.category
-        if category not in data:
-            data[category] = {"x": [], "y": []}
-        data[category]["x"].append(str(record.date))
-        data[category]["y"].append(record.downloads)
+        if record.category not in all_categories:
+            all_categories.append(record.category)
+
+    all_categories = sorted(all_categories)
+    for category in all_categories:
+        data[category]  # set the dict value (keeps it ordered)
+
+    for record in records:
+        # Fill missing intermediate dates with zeros
+        if record.date != prev_date:
+
+            for category in all_categories:
+                if category not in date_categories:
+                    data[category]["x"].append(str(prev_date))
+                    data[category]["y"].append(0)
+
+            # Fill missing intermediate dates with zeros
+            days_between = (record.date - prev_date).days
+            date_list = [prev_date + datetime.timedelta(days=x) for x in range(1, days_between)]
+
+            for date in date_list:
+                for category in all_categories:
+                    data[category]["x"].append(str(date))
+                    data[category]["y"].append(0)
+
+            # Reset
+            date_categories = []
+            prev_date = record.date
+
+        # Track categories for this date
+        date_categories.append(record.category)
+
+        data[record.category]["x"].append(str(record.date))
+        data[record.category]["y"].append(record.downloads)
+    else:
+        # Fill in missing final date with zeros
+        for category in all_categories:
+            if category not in date_categories:
+                data[category]["x"].append(str(record.date))
+                data[category]["y"].append(0)
     return data
+
+def get_proportion_data(records):
+    """Organize the data for the fill plots."""
+    data = defaultdict(lambda: {"x": [], "y": [], "text": []})
+
+    date_categories = defaultdict(lambda: 0)
+    all_categories = []
+
+    prev_date = records[0].date
+    date_csum = 0
+
+    for record in records:
+        if record.category not in all_categories:
+            all_categories.append(record.category)
+
+    all_categories = sorted(all_categories)
+    for category in all_categories:
+        data[category]  # set the dict value (keeps it ordered)
+
+    for record in records:
+        if record.date != prev_date:
+
+            total = sum(date_categories.values()) / 100
+            for category in all_categories:
+                data[category]["x"].append(str(record.date))
+                value = date_categories[category] / total
+                date_csum += value
+                data[category]["y"].append(date_csum)
+                data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
+
+            # # Fill missing intermediate dates with zeros
+            # days_between = (record.date - prev_date).days
+            # date_list = [prev_date + datetime.timedelta(days=x) for x in range(1, days_between)]
+            #
+            # for date in date_list:
+            #     for category in all_categories:
+            #         data[category]["x"].append(str(date))
+            #         data[category]["y"].append(0)
+
+            date_categories = defaultdict(lambda: 0)
+            prev_date = record.date
+            date_csum = 0
+
+        # Track categories for this date
+        date_categories[record.category] = record.downloads
+    else:
+        # Fill missing intermediate dates with zeros
+        total = sum(date_categories.values()) / 100
+        for category in all_categories:
+            data[category]["x"].append(str(record.date))
+            date_csum += date_categories[category]
+            data[category]["y"].append(date_csum)
+            data[category]["text"].append("{0:.2f}%".format(date_categories[category] / total) + " = {:,}".format(date_categories[category]))
+
+    return data
+
+
+data_function = {
+    "downloads": get_download_data,
+    "percentages": get_proportion_data,
+}
 
 
 @blueprint.route("/top")
