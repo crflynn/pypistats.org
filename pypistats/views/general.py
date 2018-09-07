@@ -1,6 +1,7 @@
 """General pages."""
 from collections import defaultdict
 from copy import deepcopy
+import datetime
 import os
 import re
 
@@ -121,6 +122,10 @@ def package(package):
     # Get data from db
     model_data = []
     for model in MODELS:
+        records = model.query.filter_by(package=package).\
+            order_by(model.date,
+                     model.category).all()
+
         if model == OverallDownloadCount:
             metrics = ["downloads"]
         else:
@@ -130,7 +135,7 @@ def package(package):
             model_data.append({
                 "metric": metric,
                 "name": model.__tablename__,
-                "data": data_function[metric](package, model),
+                "data": data_function[metric](records),
             })
 
     # Build the plots
@@ -159,53 +164,110 @@ def package(package):
         user=g.user
     )
 
-def get_download_data(package, model):
+def get_download_data(records):
     """Get the download data for a package - model."""
-    records = model.query.filter_by(package=package).\
-        order_by(model.category,
-                 model.date).all()
-    data = {}
+    data = defaultdict(lambda: {"x": [], "y": []})
+
+    date_categories = []
+    all_categories = []
+
+    prev_date = records[0].date
+
     for record in records:
-        category = record.category
-        if category not in data:
-            data[category] = {"x": [], "y": []}
-        data[category]["x"].append(str(record.date))
-        data[category]["y"].append(record.downloads)
+        if record.category not in all_categories:
+            all_categories.append(record.category)
+
+    all_categories = sorted(all_categories)
+    for category in all_categories:
+        data[category]  # set the dict value (keeps it ordered)
+
+    for record in records:
+        # Fill missing intermediate dates with zeros
+        if record.date != prev_date:
+
+            for category in all_categories:
+                if category not in date_categories:
+                    data[category]["x"].append(str(prev_date))
+                    data[category]["y"].append(0)
+
+            # Fill missing intermediate dates with zeros
+            days_between = (record.date - prev_date).days
+            date_list = [prev_date + datetime.timedelta(days=x) for x in range(1, days_between)]
+
+            for date in date_list:
+                for category in all_categories:
+                    data[category]["x"].append(str(date))
+                    data[category]["y"].append(0)
+
+            # Reset
+            date_categories = []
+            prev_date = record.date
+
+        # Track categories for this date
+        date_categories.append(record.category)
+
+        data[record.category]["x"].append(str(record.date))
+        data[record.category]["y"].append(record.downloads)
+    else:
+        # Fill in missing final date with zeros
+        for category in all_categories:
+            if category not in date_categories:
+                data[category]["x"].append(str(record.date))
+                data[category]["y"].append(0)
     return data
 
-def get_proportion_data(package, model):
-    totals = g.db.session.query(
-        model.date,
-        model.package,
-        func.sum(model.downloads).label("totals")
-    ).filter_by(package=package).group_by(model.date, model.package).subquery()
+def get_proportion_data(records):
+    data = defaultdict(lambda: {"x": [], "y": [], "text": []})
 
-    records = g.db.session.query(
-        model.date,
-        model.package,
-        model.category,
-        model.downloads,
-        label("percentages", 100.0 * model.downloads / totals.c.totals)
-    ).join(
-        totals,
-        and_(
-            model.date == totals.c.date,
-            model.package == totals.c.package
-        )
-    ).order_by(model.category, model.date).all()
+    date_categories = defaultdict(lambda: 0)
+    all_categories = []
 
-    data = {}
-    cumsum = defaultdict(float)
+    prev_date = records[0].date
+    date_csum = 0
+
     for record in records:
-        date = str(record.date)
-        category = record.category
-        if category not in data:
-            data[category] = {"x": [], "y": [], "text": []}
-        data[category]["x"].append(date)
-        value = getattr(record, "percentages") or 0
-        cumsum[date] += value
-        data[category]["y"].append(cumsum[date])
-        data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(record.downloads))
+        if record.category not in all_categories:
+            all_categories.append(record.category)
+
+    all_categories = sorted(all_categories)
+    for category in all_categories:
+        data[category]  # set the dict value (keeps it ordered)
+
+    for record in records:
+        if record.date != prev_date:
+
+            total = sum(date_categories.values()) / 100
+            for category in all_categories:
+                data[category]["x"].append(str(record.date))
+                value = date_categories[category] / total
+                date_csum += value
+                data[category]["y"].append(date_csum)
+                data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
+
+            # # Fill missing intermediate dates with zeros
+            # days_between = (record.date - prev_date).days
+            # date_list = [prev_date + datetime.timedelta(days=x) for x in range(1, days_between)]
+            #
+            # for date in date_list:
+            #     for category in all_categories:
+            #         data[category]["x"].append(str(date))
+            #         data[category]["y"].append(0)
+
+            date_categories = defaultdict(lambda: 0)
+            prev_date = record.date
+            date_csum = 0
+
+        # Track categories for this date
+        date_categories[record.category] = record.downloads
+    else:
+        # Fill missing intermediate dates with zeros
+        total = sum(date_categories.values()) / 100
+        for category in all_categories:
+            data[category]["x"].append(str(record.date))
+            date_csum += date_categories[category]
+            data[category]["y"].append(date_csum)
+            data[category]["text"].append("{0:.2f}%".format(date_categories[category] / total) + " = {:,}".format(date_categories[category]))
+
     return data
 
 
