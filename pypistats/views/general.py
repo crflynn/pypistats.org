@@ -161,8 +161,9 @@ def package(package):
         user=g.user
     )
 
+
 def get_download_data(records):
-    """Get the download data for a package - model."""
+    """Organize the data for the absolute plots."""
     data = defaultdict(lambda: {"x": [], "y": []})
 
     date_categories = []
@@ -214,6 +215,7 @@ def get_download_data(records):
     return data
 
 def get_proportion_data(records):
+    """Organize the data for the fill plots."""
     data = defaultdict(lambda: {"x": [], "y": [], "text": []})
 
     date_categories = defaultdict(lambda: 0)
