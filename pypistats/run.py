@@ -28,5 +28,5 @@ def before_request():
     g.user = None
     if "user_id" in session:
         g.user = User.query.get(session["user_id"])
-    if "db" not in g:
-        g.db = db
+    # if "db" not in g:
+    #     g.db = db
