@@ -14,9 +14,6 @@ from flask import redirect
 from flask import render_template
 from flask_wtf import FlaskForm
 import requests
-from sqlalchemy import and_
-from sqlalchemy import func
-from sqlalchemy.sql.expression import label
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
