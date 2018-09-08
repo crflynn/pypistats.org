@@ -104,10 +104,10 @@ def api_downloads_system(package):
 
 def generic_downloads(model, package, arg, name):
     """Generate a generic response."""
-    category = request.args.get(f"{arg}")
+    category = request.args.get(arg)
     if category is not None:
         downloads = model.query.\
-            filter_by(package=package, category=category.lower()).\
+            filter_by(package=package, category=category.title()).\
             order_by(model.date).all()
     else:
         downloads = model.query.\
