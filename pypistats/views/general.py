@@ -61,6 +61,7 @@ def index():
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
 def search(package):
     """Render the home page."""
+    package = package.replace(".", "-")
     form = MyForm()
     if form.validate_on_submit():
         package = form.name.data
@@ -91,6 +92,7 @@ def faqs():
 @blueprint.route("/packages/<package>")
 def package(package):
     """Render the package page."""
+    package = package.replace(".", "-")
     # Recent download stats
     recent_downloads = RecentDownloadCount.query.\
         filter_by(package=package).all()
