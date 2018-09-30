@@ -49,6 +49,44 @@
                     "5",
                     "4"
                 ],
+                "name":"Proportional downloads",
+                "hoverinfo": "x+text+name",
+                "type":"scatter",
+                "mode":"lines+markers",
+                "connectgaps":true,
+                "marker":{
+                    "symbol":"circle",
+                    "line":{
+                        "color":"#444",
+                        "width":1
+                    }
+                },
+                "line":{
+                    "shape":"linear",
+                    "smoothing":1,
+                    "width":2
+                }
+            }
+        ]
+    },
+    "percentages_fill":{
+        "data":[
+            {
+                "x":[
+                    "2017-05-01",
+                    "2017-05-02",
+                    "2017-05-03"
+                ],
+                "y":[
+                    "2",
+                    "5",
+                    "4"
+                ],
+                "text":[
+                    "2",
+                    "5",
+                    "4"
+                ],
                 "hoverinfo": "x+text+name",
                 "name":"Downloads",
                 "type":"scatter",

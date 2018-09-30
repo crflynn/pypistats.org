@@ -131,7 +131,7 @@
                 "gridwidth":2,
                 "autotick":false,
                 "showline":true,
-                "title":"Proportional Downloads",
+                "title":"Download Proportion",
                 "ticksuffix":"%",
                 "tickmode":"auto",
                 "linecolor":"rgba(148, 148, 148, 1)",

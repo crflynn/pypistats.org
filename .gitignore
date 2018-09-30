@@ -22,3 +22,6 @@ dump.rdb
 .elasticbeanstalk
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# intellij
+.idea/
