@@ -72,6 +72,9 @@ def search(package):
         order_by(RecentDownloadCount.package).\
         limit(20).all()
     packages = [r.package for r in results]
+    if len(packages) == 1:
+        package = packages[0]
+        return redirect(f"/packages/{package}")
     return render_template(
         "search.html", search=True, form=form, packages=packages, user=g.user
     )
@@ -97,7 +100,7 @@ def package_page(package):
     recent_downloads = RecentDownloadCount.query.\
         filter_by(package=package).all()
     if len(recent_downloads) == 0:
-        abort(404)
+        return redirect(f"/search/{package}")
     recent = {r: 0 for r in RECENT_CATEGORIES}
     for r in recent_downloads:
         recent[r.category] = r.downloads
