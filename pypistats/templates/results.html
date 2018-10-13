@@ -3,7 +3,7 @@
     <ul>
         {% for package in packages %}
             <li>
-                <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a>
+                <a href="{{ url_for('general.package_page', package=package) }}">{{ package }}</a>
             </li>
         {% endfor %}
     </ul>

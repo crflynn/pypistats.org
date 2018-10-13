@@ -90,7 +90,7 @@ def faqs():
 
 
 @blueprint.route("/packages/<package>")
-def package(package):
+def package_page(package):
     """Render the package page."""
     package = package.replace(".", "-")
     # Recent download stats
@@ -158,6 +158,7 @@ def package(package):
             plot["layout"]["title"] = \
                 f"Daily Download Quantity of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         plots.append(plot)
+
     return render_template(
         "package.html",
         package=package,
@@ -216,7 +217,7 @@ def get_download_data(records):
         # Fill in missing final date with zeros
         for category in all_categories:
             if category not in date_categories:
-                data[category]["x"].append(str(record.date))
+                data[category]["x"].append(str(records[-1].date))
                 data[category]["y"].append(0)
     return data
 
@@ -243,7 +244,7 @@ def get_proportion_data(records):
 
             total = sum(date_categories.values()) / 100
             for category in all_categories:
-                data[category]["x"].append(str(record.date))
+                data[category]["x"].append(str(prev_date))
                 value = date_categories[category] / total
                 data[category]["y"].append(value)
                 data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
@@ -253,6 +254,19 @@ def get_proportion_data(records):
 
         # Track categories for this date
         date_categories[record.category] = record.downloads
+    else:
+        # Fill in missing final date with zeros
+        total = sum(date_categories.values()) / 100
+        for category in all_categories:
+            if category not in date_categories:
+                data[category]["x"].append(str(records[-1].date))
+                data[category]["y"].append(0)
+                data[category]["text"].append("{0:.2f}%".format(0) + " = {:,}".format(0))
+            else:
+                data[category]["x"].append(str(records[-1].date))
+                value = date_categories[category] / total
+                data[category]["y"].append(value)
+                data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
 
     return data
 

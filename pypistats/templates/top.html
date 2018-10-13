@@ -22,7 +22,7 @@
                                     {{ loop.index }}
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('general.package', package=package['package']) }}">{{ package['package'] }}</a>
+                                    <a href="{{ url_for('general.package_page', package=package['package']) }}">{{ package['package'] }}</a>
                                 </td>
                                 <td>
                                     {{ "{:,.0f}".format(package['downloads']) }}

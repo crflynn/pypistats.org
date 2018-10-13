@@ -9,15 +9,13 @@
         <p>Currently saved packages.</p>
         {% if user.favorites %}
             <p>
-                <ul>
-                    {% for package in user.favorites %}
-                        <li>
-                            <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <!-- <table> {% for package in user.favorites %} <tr> <td> <a href="{{ url_for('general.package', package=package) }}">{{ package }}</a> </td> <td> <a href="{{ url_for('user.user_package', package=package) }}">REMOVE</a> </td> </tr> {% endfor %}
-                </table> -->
+            <ul>
+                {% for package in user.favorites %}
+                    <li>
+                        <a href="{{ url_for('general.package_page', package=package) }}">{{ package }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
             </p>
         {% else %}
             <p>Not tracking any packages.</p>

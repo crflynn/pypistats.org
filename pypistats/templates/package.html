@@ -1,96 +1,97 @@
 {% extends "layout.html" %}
 {% block title %}PyPI Download Stats{% endblock %}
-{% block plot%}
+{% block plot %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 {% endblock %}
 {% block body %}
-    <h1>{{package}}</h1>
+    <h1>{{ package }}</h1>
     <hr>
     {% if user %}
         {% if user.favorites and package in user.favorites %}
             <p>
                 <img src="{{ user.avatar_url }}" height="20" width="20">
-                <a href="{{ url_for('user.user_package', package=package)}}">REMOVE from my packages</a><br></p>
+                <a href="{{ url_for('user.user_package', package=package) }}">REMOVE from my packages</a><br></p>
         {% else %}
             <p>
                 <img src="{{ user.avatar_url }}" height="20" width="20">
-                <a href="{{ url_for('user.user_package', package=package)}}">ADD to my packages</a><br></p>
+                <a href="{{ url_for('user.user_package', package=package) }}">ADD to my packages</a><br></p>
         {% endif %}
     {% endif %}
     {% if package == "__all__" %}
         <p>Download stats for __all__ indicate downloads across all packages on PyPI.</p>
     {% else %}
         <p>
-            {% if metadata %}
-                <a href="{{ metadata['info']['package_url']}}">PyPI page</a>
-                <br>
-                <a href="{{ metadata['info']['home_page']}}">Home page</a>
-                <br>
-                Author:
-                {{metadata['info']['author']}}
-                {% if metadata['info']['license'] is not none %}
+        {% if metadata %}
+            <a href="{{ metadata['info']['package_url'] }}">PyPI page</a>
+            <br>
+            <a href="{{ metadata['info']['home_page'] }}">Home page</a>
+            <br>
+            Author:
+            {{ metadata['info']['author'] }}
+            {% if metadata['info']['license'] is not none %}
                 <br>
                 License:
-                    {% if metadata['info']['license'] | length > 200 %}
-                       {{metadata['info']['license'][:200]}}...
-                   {% else %}
-                       {{metadata['info']['license']}}
-                   {% endif %}
+                {% if metadata['info']['license'] | length > 200 %}
+                    {{ metadata['info']['license'][:200] }}...
+                {% else %}
+                    {{ metadata['info']['license'] }}
                 {% endif %}
-                <br>
-                Summary:
-                {{metadata['info']['summary']}}
-                <br>
-                Latest version:
-                {{metadata['info']['version']}}
-                <br>
-                {% if metadata['requires'] %}
-                    Requires:
-                    {% for required in metadata['requires'] %}
-                        <a href="{{ url_for('general.package', package=required.lower())}}">{{required.lower()}}</a>
-                        {% if not loop.last %}|{% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% else %}
-                No metadata found.
-            {%endif%}
+            {% endif %}
+            <br>
+            Summary:
+            {{ metadata['info']['summary'] }}
+            <br>
+            Latest version:
+            {{ metadata['info']['version'] }}
+            <br>
+            {% if metadata['requires'] %}
+                Requires:
+                {% for required in metadata['requires'] %}
+                    <a href="{{ url_for('general.package_page', package=required.lower()) }}">{{ required.lower() }}</a>
+                    {% if not loop.last %}|{% endif %}
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            No metadata found.
+        {% endif %}
     {% endif %}
-            <br>
-            <br>
-            Downloads last day:
-            {{"{:,.0f}".format(recent['day'])}}
-            <br>
-            Downloads last week:
-            {{"{:,.0f}".format(recent['week'])}}
-            <br>
-            Downloads last month:
-            {{"{:,.0f}".format(recent['month'])}}
-        </p>
-        <script>
+<br>
+<br>
+Downloads last day:
+{{ "{:,.0f}".format(recent['day']) }}
+<br>
+Downloads last week:
+{{ "{:,.0f}".format(recent['week']) }}
+<br>
+Downloads last month:
+{{ "{:,.0f}".format(recent['month']) }}
+</p>
+    <script>
 
-            (function () {
-                var WIDTH_IN_PERCENT_OF_PARENT = 100
-                // var HEIGHT = '300px'
-                var divelems = []
+        (function () {
+            var WIDTH_IN_PERCENT_OF_PARENT = 100
+            // var HEIGHT = '300px'
+            var divelems = []
 
-                var data = {{ plots|tojson }}
+            var data =
+            {{ plots|tojson }}
 
-                for (plt in data) {
-                    var gd3 = Plotly.d3.select('section').append('div').style({
-                        width: WIDTH_IN_PERCENT_OF_PARENT + '%',
-                        'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
-                        // height: HEIGHT,
-                    })
-                    var gd = gd3.node()
-                    divelems.push(gd)
-                    Plotly.newPlot(divelems[divelems.length - 1], data[plt].data, data[plt].layout, data[plt].config);
+            for (plt in data) {
+                var gd3 = Plotly.d3.select('section').append('div').style({
+                    width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+                    'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+                    // height: HEIGHT,
+                })
+                var gd = gd3.node()
+                divelems.push(gd)
+                Plotly.newPlot(divelems[divelems.length - 1], data[plt].data, data[plt].layout, data[plt].config);
+            }
+            window.onresize = function () {
+                for (chart in divelems) {
+                    Plotly.Plots.resize(divelems[chart]);
                 }
-                window.onresize = function () {
-                    for (chart in divelems) {
-                        Plotly.Plots.resize(divelems[chart]);
-                    }
-                };
-            })();
-        </script>
-    {% endblock %}
+            };
+        })();
+    </script>
+{% endblock %}
