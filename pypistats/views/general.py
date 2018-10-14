@@ -12,6 +12,7 @@ from flask import g
 from flask import json
 from flask import redirect
 from flask import render_template
+from flask import request
 from flask_wtf import FlaskForm
 import requests
 from wtforms import StringField
@@ -97,8 +98,17 @@ def package_page(package):
     """Render the package page."""
     package = package.replace(".", "-")
     # Recent download stats
+    try:
+        # Take the min of the lookback and 180
+        lookback = min(abs(int(request.args.get("lookback", 180))), 180)
+    except ValueError:
+        lookback = 180
+
+    start_date = str(datetime.date.today() - datetime.timedelta(lookback))
+
     recent_downloads = RecentDownloadCount.query.\
         filter_by(package=package).all()
+
     if len(recent_downloads) == 0:
         return redirect(f"/search/{package}")
     recent = {r: 0 for r in RECENT_CATEGORIES}
@@ -125,8 +135,8 @@ def package_page(package):
     model_data = []
     for model in MODELS:
         records = model.query.filter_by(package=package).\
-            order_by(model.date,
-                     model.category).all()
+            filter(model.date >= start_date).\
+            order_by(model.date, model.category).all()
 
         if model == OverallDownloadCount:
             metrics = ["downloads"]
@@ -144,6 +154,8 @@ def package_page(package):
     plots = []
     for model in model_data:
         plot = deepcopy(current_app.config["PLOT_BASE"])[model["metric"]]
+
+        # Set data
         data = []
         for category, values in model["data"].items():
             base = deepcopy(current_app.config["DATA_BASE"][model["metric"]]["data"][0])
@@ -154,12 +166,38 @@ def package_page(package):
             base["name"] = category.title()
             data.append(base)
         plot["data"] = data
+
+        # Add titles
         if model["metric"] == "percentages":
             plot["layout"]["title"] = \
                 f"Daily Download Proportions of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         else:
             plot["layout"]["title"] = \
                 f"Daily Download Quantity of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
+
+        # Explicitly set range
+        plot["layout"]["xaxis"]["range"] = [str(records[0].date - datetime.timedelta(1)), str(datetime.date.today())]
+
+        # Add range buttons
+        plot["layout"]["xaxis"]["rangeselector"] = {"buttons": []}
+        drange = (datetime.date.today() - records[0].date).days
+        for k in [30, 60, 90, 120, 9999]:
+            if k <= drange:
+                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append({
+                    "step": "day",
+                    "stepmode": "backward",
+                    "count": k+1,
+                    "label": f"{k}d"
+                })
+            else:
+                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append({
+                    "step": "day",
+                    "stepmode": "backward",
+                    "count": drange + 1,
+                    "label": "all"
+                })
+                break
+
         plots.append(plot)
 
     return render_template(

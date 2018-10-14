@@ -14,7 +14,7 @@ from pypistats.models.download import RecentDownloadCount
 from pypistats.models.download import SystemDownloadCount
 
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint("api", __name__, url_prefix="/api")
 
 
 @blueprint.route("/")
@@ -27,7 +27,7 @@ def api():
 def api_downloads_recent(package):
     """Get the recent downloads of a package."""
     package = package.replace(".", "-")
-    category = request.args.get('period')
+    category = request.args.get("period")
     if category is None:
         downloads = RecentDownloadCount.query.\
             filter_by(package=package).all()
@@ -55,12 +55,12 @@ def api_downloads_recent(package):
 def api_downloads_overall(package):
     """Get the overall download time series of a package."""
     package = package.replace(".", "-")
-    mirrors = request.args.get('mirrors')
-    if mirrors == 'true':
+    mirrors = request.args.get("mirrors")
+    if mirrors == "true":
         downloads = OverallDownloadCount.query.\
             filter_by(package=package, category="with_mirrors").\
             order_by(OverallDownloadCount.date).all()
-    elif mirrors == 'false':
+    elif mirrors == "false":
         downloads = OverallDownloadCount.query.\
             filter_by(package=package, category="without_mirrors").\
             order_by(OverallDownloadCount.date).all()

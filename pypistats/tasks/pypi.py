@@ -415,7 +415,7 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-07-28"
+    date = "2018-10-13"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))
