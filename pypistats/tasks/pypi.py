@@ -314,17 +314,14 @@ def get_query(date):
     WITH
       dls AS (
       SELECT
-        country_code,
         file.project AS package,
-        file.version AS package_version,
-        file.type AS file_type,
         details.installer.name AS installer,
         details.python AS python_version,
-        details.implementation.name AS python_implementation,
-        details.distro.name AS distro,
         details.system.name AS system
       FROM
-        `the-psf.pypi.downloads{date.replace("-", "")}` )
+        `the-psf.pypi.downloads{date.replace("-", "")}`
+      WHERE
+        details.python LIKE '%.%' )
     SELECT
       package,
       'python_major' AS category_label,
@@ -415,7 +412,7 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-10-13"
+    date = "2018-10-23"
     env = "prod"
     print(date, env)
     print(get_daily_download_stats(env, date))
