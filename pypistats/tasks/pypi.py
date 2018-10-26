@@ -321,7 +321,8 @@ def get_query(date):
       FROM
         `the-psf.pypi.downloads{date.replace("-", "")}`
       WHERE
-        details.python LIKE '%.%' )
+        details.python LIKE '%.%' OR 
+        details.python IS NULL )
     SELECT
       package,
       'python_major' AS category_label,
