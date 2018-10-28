@@ -10,13 +10,30 @@
     <p>Download stats are sourced from the Python Software Foundation's publicly available
         <a href="https://bigquery.cloud.google.com/table/the-psf:pypi.downloads">download stats</a>
         on Google BigQuery. All aggregate download stats ignore known PyPI mirrors (such as
-        <a href="{{ url_for('general.package_page', package='bandersnatch') }}">bandersnatch</a>) unless noted otherwise.</p>
+        <a href="{{ url_for('general.package_page', package='bandersnatch') }}">bandersnatch</a>) unless noted
+        otherwise.</p>
     <p>PyPI Stats attempts to operate within the free tier of its hosted services. For this reason, aggregate data is
         only retained for 180 days.</p>
     <h3>API</h3>
     <p>A simple
         <a href="{{ url_for('api.api') }}">JSON API</a>
         is available for aggregate download stats and time series for packages.</p>
+    <h3>Downstream</h3>
+    <p>
+    <ul>
+        <li>
+            <a href="{{ url_for('general.package_page', package='pypistats') }}">pypistats</a> is a <a
+                href="https://github.com/hugovk/pypistats">python package</a> that provides a client and CLI tool for
+            the pypistats.org JSON API</a>
+        </li>
+        <li>
+            <a href="https://shields.io/#/examples/downloads">shields.io</a> uses the pypistats.org JSON API to provide
+            download count badges, like this one for <a
+                href="{{ url_for('general.package_page', package='pypistats') }}">pypistats</a> <a
+                href="https://github.com/hugovk/pypistats"><img src="https://img.shields.io/pypi/dm/pypistats.svg"></a>
+        </li>
+    </ul>
+    </p>
     <h3>Tech</h3>
     <p>PyPI Stats is a project developed using Python 3.6. Here are some of the tools used to create it:
     <ul>
@@ -63,6 +80,9 @@
     <h3>Who</h3>
     <p>PyPI Stats was created by
         <a href="https://flynn.gg">Christopher Flynn</a>.
+    </p>
+    <p>
+        Thanks to <a href="https://github.com/hugovk">Hugo (hugovk)</a> for providing a client interface to the API.
     </p>
 
 {% endblock %}
