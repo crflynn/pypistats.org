@@ -14,7 +14,7 @@
         When is the website data updated?
     </h3>
     <p>
-        The data update begins at 01:00:00 UTC and should take less than 10 minutes.
+        The data update begins at 01:00:00 UTC and should take about 10 minutes.
     </p>
     <h3>
         Why are there so many more downloads after July 26, 2018?
@@ -32,44 +32,48 @@
     <p>
         The cumulative download counts consider only the download records which are not from a known set of PyPI mirror
         applications, namely <code>bandersnatch</code>, <code>z3c.pypimirror</code>, <code>Artifactory</code>, and
-        <code>devpi</code>. In other words, the cumulative download counts take the sum of the downloads from the <i>Without_Mirrors</i>
-        dataset from the chart.
+        <code>devpi</code>. In other words, the cumulative download counts take the sum of the downloads from the
+        <i>Without_Mirrors</i> dataset from the chart.
     </p>
     <h3>
-        What is the difference between <i>Without_Mirrors</i> and <i>With_Mirrors</i>?
+        What is the difference between <i>Without_Mirrors</i> and <i>With_Mirrors</i> downloads?
     </h3>
     <p>
-        The <i>With_Mirrors</i> and <i>Without_Mirrors</i> are not mutually exclusive sets of download counts like the 
-        other segmentations provided. In fact, the <i>Without_Mirrors</i> downloads are a subset of the downloads in 
-        <i>With_Mirrors</i>.
+        The <b>With_Mirrors</b> and <b>Without_Mirrors</b> downloads are not mutually exclusive sets of download counts
+        like the other segmentations provided. In fact, the <b>Without_Mirrors</b> downloads are a subset of the
+        downloads in <b>With_Mirrors</b>.
     </p>
     <p>
-        Some entities will create a mirror, or clone, of the PyPI repository using a tool like <code>bandersnatch</code>
-        for the sake of security or availability. This means that their mirror repository regularly syncs with PyPI by 
-        downloading all of the Python packages available. Those downloads are recorded by PyPI with <code>bandersnatch</code> 
-        as the user-agent. pypistats.org filters downloads from known mirrors from the version and system segmentations on 
-        the website. You will see also that on days in which you release a new version of your package there will be many 
-        more downloads from mirrors, as active mirrors will sync with PyPI by downloading those new releases.
+        Some entities will create a mirror, or clone, of the PyPI repository using a tool like <a
+            href="{{ url_for('general.package_page', package='bandersnatch') }}">bandersnatch</a>
+        for the sake of security or availability. This means that their mirror repository regularly syncs with PyPI by
+        downloading all of the Python packages available (and versions thereof) that it does not already have. Those
+        downloads are recorded by PyPI with <code>bandersnatch</code> as the user-agent. You will see also that on days
+        in which you release a new version of your package there will be many more downloads from mirrors, as active
+        mirrors will sync with PyPI by downloading those new releases.
     </p>
     <p>
-        The existence of mirrors means that the downloads provided by PyPI and BigQuery add uncertainty to the actual 
-        usage of Python packages. One might expect that mirrors will mask end-user downloads for more commonly used 
-        packages while simultaneously inflating the download counts of less common ones. We can't really be sure because 
-        the mirrors don't report subsequent downloads back to PyPI.
+        pypistats.org filters downloads from known mirrors from the version and system segmentations on the website.
+        Downloads by mirrors are intentionally excluded from download breakdowns because they do not
+        represent end-users of the software. Instead, they serve as an alternative provider to <i>other</i> end-users on
+        a separate (sometimes private) network.
     </p>
     <p>
-        Downloads by mirrors are intentionally excluded from download breakdowns on pypistats.org because they do not 
-        represent end-users of the software. Instead, they serve as an alternative provider to other end-users on a 
-        separate (sometimes private) network.
+        The existence of mirrors means that the downloads provided by PyPI and BigQuery come with some uncertainty with
+        respect to the actual aggregate usage of Python packages. One might expect that mirrors will mask end-user
+        downloads for more commonly used packages while simultaneously inflating the download counts of less common
+        ones. This uncertainty is difficult to quantify because the mirrors don't report subsequent downloads back to
+        PyPI.
     </p>
     <p>
-        We can, however, assume that PyPI serves a significant proportion of the Python community's packaging downloads. 
-        Hopefully significant enough that the quantities provided here are relevant to package maintainers and 
-        representative of their users. There are other distributors like Conda which also serve python packages, but 
-        their download data is not available like PyPI's as far as I'm aware, and thus are not incorporated in this website.
+        One can, however, assume that PyPI serves a significant proportion of the Python community's packaging
+        downloads. Hopefully significant enough that the quantities provided here are representative of their users and
+        relevant to package maintainers. There are other distributors, like Conda, which also serve python packages,
+        but their download data is currently not publicly available at the event level like PyPI's, and thus are not
+        incorporated into the metrics on this website.
     </p>
     <h3>
-        Why disregard mirrors from aggregated data?
+        Why disregard mirrors from aggregate data?
     </h3>
     <p>
         The intent of disregarding mirrors is to provide metrics that reflect end-user download aggregation.
@@ -79,7 +83,7 @@
     </h3>
     <p>
         Downloads from CI/CD tools are included in all metrics. There is currently no easy way to attribute downloads to
-        deployment tools.
+        build/deployment tools.
     </p>
 
 {% endblock %}
