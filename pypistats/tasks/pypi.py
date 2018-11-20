@@ -22,7 +22,7 @@ SYSTEMS = ("Windows", "Linux", "Darwin")
 PSQL_TABLES = ["overall", "python_major", "python_minor", "system"]
 
 # Number of days to retain records
-MAX_RECORD_AGE = 200
+MAX_RECORD_AGE = 180
 
 
 def get_google_credentials():
@@ -307,7 +307,6 @@ def vacuum_analyze(env="dev"):
     return results
 
 
-
 def get_query(date):
     """Get the query to execute against pypistats on bigquery."""
     return f"""
@@ -402,20 +401,20 @@ def etl():
     """Perform the stats download."""
     env = os.environ.get("ENV")
     date = str(datetime.date.today() - datetime.timedelta(days=1))
-    results = {
-        "downloads": get_daily_download_stats(env, date),
-        "__all__": update_all_package_stats(env, date),
-        "recent": update_recent_stats(env, date),
-        "purge": purge_old_data(env, date),
-    }
+    results = dict()
+    results["purge"] = purge_old_data(env, date)
+    results["downloads"] = get_daily_download_stats(env, date)
+    results["__all__"] = update_all_package_stats(env, date)
+    results["recent"] = update_recent_stats(env, date)
     results["cleanup"] = vacuum_analyze(env)
     return results
 
 
 if __name__ == "__main__":
-    date = "2018-10-23"
+    date = "2018-11-19"
     env = "prod"
     print(date, env)
+    print(purge_old_data(env, date))
     print(get_daily_download_stats(env, date))
     print(update_all_package_stats(env, date))
     print(update_recent_stats(env, date))
