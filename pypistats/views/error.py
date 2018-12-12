@@ -26,3 +26,9 @@ def handle_404(err):
 def handle_500(err):
     """Return 500."""
     return "500", 500
+
+
+@blueprint.app_errorhandler(503)
+def handle_503(err):
+    """Return 500."""
+    return "503 TEMPORARILY DISABLED", 503

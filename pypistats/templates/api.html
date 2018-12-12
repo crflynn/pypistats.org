@@ -19,6 +19,20 @@
         <li>All download data is updated once daily.</li>
     </ul>
     </p>
+    <h2>Etiquette</h2>
+    <p>
+        If you plan on using the API to download historical data for every python package in the database (e.g. for some
+        personal data exploration), <b>DON'T</b>. This website runs on limited resources and you will degrade
+        the site performance by doing this. It will also take a very long time.
+    </p>
+    <p>
+        You are much better off extracting the data directly from the Google
+        BigQuery <a href="https://bigquery.cloud.google.com/table/the-psf:pypi.downloads">pypi downloads tables</a>. You
+        can query up to 1TB of data FREE every month before having to pay. The volume of data queried for this website
+        falls well under that limit (each month of data is less than 100 GB queried) and you will have your data
+        in a relatively short amount of time. <a
+            href="https://packaging.python.org/guides/analyzing-pypi-package-downloads/">Here is a quick guide</a>.
+    </p>
     <h2>API Client</h2>
     <p>
         The <a href="{{ url_for('general.package_page', package='pypistats') }}">pypistats</a> <a
