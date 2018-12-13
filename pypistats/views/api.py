@@ -26,7 +26,7 @@ def api():
 @blueprint.route("/packages/<package>/recent")
 def api_downloads_recent(package):
     """Get the recent downloads of a package."""
-    package = package.replace(".", "-")
+    package = package.replace(".", "-").replace("_", "-")
     category = request.args.get("period")
     if category is None:
         downloads = RecentDownloadCount.query.\
@@ -55,7 +55,7 @@ def api_downloads_recent(package):
 def api_downloads_overall(package):
     """Get the overall download time series of a package."""
     abort(503)
-    package = package.replace(".", "-")
+    package = package.replace(".", "-").replace("_", "-")
     mirrors = request.args.get("mirrors")
     if mirrors == "true":
         downloads = OverallDownloadCount.query.\
@@ -108,7 +108,7 @@ def api_downloads_system(package):
 def generic_downloads(model, package, arg, name):
     """Generate a generic response."""
     abort(503)
-    package = package.replace(".", "-")
+    package = package.replace(".", "-").replace("_", "-")
     category = request.args.get(arg)
     if category is not None:
         downloads = model.query.\
