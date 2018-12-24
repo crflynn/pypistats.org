@@ -64,6 +64,7 @@ def get_daily_download_stats(env="dev", date=None):
     print(date)
     print("Sending query to BigQuery...")
     query = get_query(date)
+    print(query)
     print("Sent.")
     query_job = bq_client.query(query, job_config=job_config)
     iterator = query_job.result()
@@ -320,7 +321,7 @@ def get_query(date):
       FROM
         `the-psf.pypi.downloads{date.replace("-", "")}`
       WHERE
-        details.python LIKE '%.%' OR 
+        REGEXP_CONTAINS(details.python,r'^[0-9]+\.[0-9]+.{{0,}}$') OR 
         details.python IS NULL )
     SELECT
       package,
@@ -411,11 +412,11 @@ def etl():
 
 
 if __name__ == "__main__":
-    date = "2018-11-19"
+    date = "2018-12-23"
     env = "prod"
     print(date, env)
-    print(purge_old_data(env, date))
+    # print(purge_old_data(env, date))
     print(get_daily_download_stats(env, date))
     print(update_all_package_stats(env, date))
     print(update_recent_stats(env, date))
-    vacuum_analyze(env)
+    # vacuum_analyze(env)
