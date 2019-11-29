@@ -117,6 +117,7 @@ def package_page(package):
 
     # PyPI metadata
     metadata = None
+    seen = set()
     if package != "__all__":
         try:
             metadata = requests.get(
@@ -125,9 +126,11 @@ def package_page(package):
             if metadata["info"].get("requires_dist", None):
                 metadata["requires"] = []
                 for required in metadata["info"]["requires_dist"]:
-                    metadata["requires"].append(
-                        re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
-                    )
+                    pkg = re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
+                    if pkg not in seen:
+                        metadata["requires"].append(pkg)
+                        seen.add(pkg)
+                metadata["requires"].sort()
         except Exception:
             pass
 
