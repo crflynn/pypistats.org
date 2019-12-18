@@ -46,11 +46,7 @@
             {{ metadata['info']['version'] }}
             <br>
             {% if metadata['requires'] %}
-                Requires:
-                {% for required in metadata['requires'] %}
-                    <a href="{{ url_for('general.package_page', package=required.lower()) }}">{{ required.lower() }}</a>
-                    {% if not loop.last %}|{% endif %}
-                {% endfor %}
+                {% metadata['requires'] %}
             {% endif %}
         {% else %}
             No metadata found.

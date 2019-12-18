@@ -93,6 +93,40 @@ def faqs():
     return render_template("faqs.html", user=g.user)
 
 
+def _deplist_to_html(deps):
+    requirements = []
+    optional = defaultdict(list)
+    for dep in deps:
+        extra, markers = None, []
+        name, *rest = map(str.strip, dep.split(";"))
+        name = name.split(" ")[0]  # discard version information
+        for k in rest:
+            if k.startswith("extra == "):
+                assert extra is None
+                extra = k.replace("extra == ", "").replace("'", "")
+            else:
+                markers.append(k)
+        description = f'<a href="https://pypi.org/project/{name}/">{name}</a>'
+        if markers:
+            description += f" ({''.join(markers)})"
+        if extra is None:
+            requirements.append(description)
+        else:
+            optional[extra].append(description)
+    if "all" in optional:
+        others = sum([pkgs for extra, pkgs in optional.items() if extra != "all"], [])
+        if set(optional["all"]) == set(others):
+            optional.pop("all")
+    out = []
+    if requirements:
+        out.append(f"Requires: " + " | ".join(requirements) + "\n<br>")
+    if optional:
+        entries = [k + ": " + " | ".join(v) for k, v in sorted(optional.items())]
+        out.append("Optional dependencies:\n<br>\n    ")
+        out.append("\n<br>\n    ".join(entries) + "\n<br>")
+    return "".join(out)
+
+
 @blueprint.route("/packages/<package>")
 def package_page(package):
     """Render the package page."""
@@ -124,13 +158,9 @@ def package_page(package):
                 f"https://pypi.python.org/pypi/{package}/json",
                 timeout=5).json()
             if metadata["info"].get("requires_dist", None):
-                metadata["requires"] = []
-                for required in metadata["info"]["requires_dist"]:
-                    pkg = re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
-                    if pkg not in seen:
-                        metadata["requires"].append(pkg)
-                        seen.add(pkg)
-                metadata["requires"].sort()
+                requires = _deplist_to_html(metadata["info"]["requires_dist"])
+                if requires:
+                    metadata["requires"] = requires
         except Exception:
             pass
 
