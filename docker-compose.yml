@@ -1,0 +1,71 @@
+version: '3'
+services:
+  # flask webserver
+  web:
+    build:
+      context: .
+    command: webdev
+    depends_on:
+      - postgresql
+    env_file:
+      - envs/local.env
+    # enable autorebuilding
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    ports:
+      - "5000:5000"
+    # bind mount the web app source for autorebuilding
+    volumes:
+      - ./pypistats/:/app/pypistats/
+  # beat scheduler
+  beat:
+    build:
+      context: .
+    command: beat
+    depends_on:
+      - redis
+    env_file:
+      - envs/local.env
+  # celery workers
+  celery:
+    build:
+      context: .
+    command: celery
+    depends_on:
+      - redis
+      - postgresql
+    env_file:
+      - envs/local.env
+  # apply schema migrations to the databse
+  migrate:
+    build:
+      context: .
+    command: migrate
+    depends_on:
+      - postgresql
+    env_file:
+      - envs/local.env
+  # seed the database
+  seeds:
+    build:
+      context: .
+    command: seeds
+    depends_on:
+      - postgresql
+      - migrate
+    env_file:
+      - envs/local.env
+  # task queue for celery
+  redis:
+    image: redis:5.0.7-alpine
+  # database for download counts and user info
+  postgresql:
+    image: postgres:11
+    environment:
+    - POSTGRES_USER=admin
+    - POSTGRES_PASSWORD=root
+    - POSTGRES_DB=pypistats
+    ports:
+    # 5432 is likely already taken by host's postgresql
+    - "5433:5432"
