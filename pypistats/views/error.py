@@ -1,7 +1,7 @@
 """Error page handlers."""
 from flask import Blueprint
 
-blueprint = Blueprint('error', __name__, template_folder='templates')
+blueprint = Blueprint("error", __name__, template_folder="templates")
 
 
 @blueprint.app_errorhandler(400)

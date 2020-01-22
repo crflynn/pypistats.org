@@ -7,15 +7,15 @@ from flask_sslify import SSLify
 
 from pypistats.application import create_app
 from pypistats.application import create_celery
+from pypistats.config import configs
 from pypistats.models.user import User
-from pypistats.settings import configs
-
 
 # change this for migrations
-env = os.environ.get("ENV", "dev")
+env = os.environ.get("ENV", "development")
 
 app = create_app(configs[env])
-sslify = SSLify(app)
+if env in ("production", "staging"):
+    sslify = SSLify(app)
 celery = create_celery(app)
 
 app.logger.info(f"Environment: {env}")

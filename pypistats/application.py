@@ -4,10 +4,10 @@ from celery import Task
 from flask import Flask
 
 from pypistats import views
+from pypistats.config import DevConfig
 from pypistats.extensions import db
 from pypistats.extensions import github
 from pypistats.extensions import migrate
-from pypistats.settings import DevConfig
 
 
 def create_app(config_object=DevConfig):
