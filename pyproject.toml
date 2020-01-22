@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "pypistatsorg"
+version = "0.1.0"
+description = ""
+authors = ["Flynn <crf204@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+google-cloud-bigquery = "^1.17"
+flask = "^1.1"
+github-flask = "^3.2"
+flask-sqlalchemy = "^2.4"
+flask-migrate = "^2.5"
+flask-login = "^0.4.1"
+flask-wtf = "^0.14.2"
+flask-sslify = "^0.1.5"
+gunicorn = "^19.9"
+requests = "^2.22"
+celery = "^4.3"
+psycopg2-binary = "^2.8"
+redis = "^3.3"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
+isort = "^4.3"
+
+[tool.black]
+line-length = 120
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.circleci
+    | \.git
+    | \.github
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
