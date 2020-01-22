@@ -5,7 +5,8 @@
 Dockerfile
 README.rst
 docs/
-migrations/
+envs/
+scripts/
 tests/
 
 # mac osx
@@ -14,9 +15,6 @@ tests/
 # python bytecode
 *.py[cod]
 __pycache__
-
-# ignore
-ignore/
 
 # celery
 celerybeat-schedule
@@ -27,5 +25,3 @@ dump.rdb
 
 # Elastic Beanstalk Files
 .elasticbeanstalk
-.git
-.gitignore
