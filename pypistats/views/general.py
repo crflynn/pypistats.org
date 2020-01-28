@@ -143,11 +143,12 @@ def package_page(package):
         else:
             metrics = ["downloads", "percentages"]
 
+        use_smoothing = 'smoothing' in request.form.getlist('smoothing')
         for metric in metrics:
             model_data.append({
                 "metric": metric,
                 "name": model.__tablename__,
-                "data": data_function[metric](records),
+                "data": data_function[metric](records, use_smoothing=use_smoothing),
             })
 
     # Build the plots
@@ -210,7 +211,23 @@ def package_page(package):
     )
 
 
-def get_download_data(records):
+def smooth_data(data, window=7):
+    # Ensure data is sorted by date
+    data["x"], data["y"] = zip(*[(x, y) for x, y in sorted(
+        zip(data["x"], data["y"]), key=lambda pair: pair[0])])
+    # Smooth data on a rolling window
+    smoothed_data = deepcopy(data)
+    for i in range(len(data["y"])):
+        window_data = []
+        window_start = max(0, i - window // 2)
+        window_end = min(len(data) - 1, i + window // 2)
+        for j in range(window_start, window_end + 1):
+            window_data.append(data["y"][j])
+        smoothed_data["y"][i] = sum(window_data) / len(window_data)
+    return smoothed_data
+
+
+def get_download_data(records, use_smoothing=False):
     """Organize the data for the absolute plots."""
     data = defaultdict(lambda: {"x": [], "y": []})
 
@@ -260,10 +277,16 @@ def get_download_data(records):
             if category not in date_categories:
                 data[category]["x"].append(str(records[-1].date))
                 data[category]["y"].append(0)
+
+    if use_smoothing:
+        # Smooth data using a 7-day window
+        for category in all_categories:
+            data[category] = smooth_data(data[category])
+
     return data
 
 
-def get_proportion_data(records):
+def get_proportion_data(records, use_smoothing=False):
     """Organize the data for the fill plots."""
     data = defaultdict(lambda: {"x": [], "y": [], "text": []})
 
@@ -308,6 +331,11 @@ def get_proportion_data(records):
                 value = date_categories[category] / total
                 data[category]["y"].append(value)
                 data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
+
+    if use_smoothing:
+        # Smooth data using a 7-day window
+        for category in all_categories:
+            data[category] = smooth_data(data[category])
 
     return data
 
