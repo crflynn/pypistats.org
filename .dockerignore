@@ -2,12 +2,16 @@
 .git
 .gitignore
 .dockerignore
-Dockerfile
-README.rst
-docs/
+.isort.cfg
+.tool-versions
+docker-compose.yml
 envs/
 scripts/
+pypistats.egg-info/
 tests/
+Dockerfile
+Makefile
+README.rst
 
 # mac osx
 .DS_Store
@@ -25,3 +29,10 @@ dump.rdb
 
 # Elastic Beanstalk Files
 .elasticbeanstalk
+.ebignore
+
+# intellij
+.idea/
+
+# terraform
+terraform/
