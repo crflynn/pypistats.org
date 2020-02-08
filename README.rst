@@ -22,7 +22,5 @@ PyPI Stats provides a simple JSON API to retrieve aggregate download stats and t
 Development
 -----------
 
-To develop locally, run ``make setup -i``. This will install ``asdf``, add plugins for python and poetry, install python and poetry, and install python dependencies into a poetry virtual environment.
-
 Run ``make pypistats`` to launch a complete development environment using docker-compose.
 
