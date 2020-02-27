@@ -20,8 +20,10 @@ result = subprocess.run(["poetry", "show"], stdout=subprocess.PIPE)
 output = result.stdout.decode()
 
 # extract just the package names from the output
+# skip the first line which is a poetry warning
+# and the last line which is empty
 packages = []
-for line in output.split("\n")[:-1]:
+for line in output.split("\n")[1:-1]:
     packages.append(line.split(" ")[0])
 
 logging.info(packages)

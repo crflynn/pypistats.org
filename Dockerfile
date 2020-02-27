@@ -21,7 +21,7 @@ ARG POETRY_VERSION=1.0.3
 # Set to ensure logs are output promptly
 ENV PYTHONUNBUFFERED=1
 # Update the path
-ENV PATH=/home/python/.poetry/bin:opt/bin:/home/python/.local/bin:$PATH
+ENV PATH=/home/python/.poetry/bin:/home/python/.local/bin:$PATH
 
 # Install vendored poetry
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
