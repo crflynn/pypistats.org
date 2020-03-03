@@ -18,6 +18,7 @@ services:
     # bind mount the web app source for autorebuilding
     volumes:
       - ./pypistats/:/app/pypistats/
+      - ./migrations/:/app/migrations/
   # beat scheduler
   beat:
     build:
@@ -27,6 +28,9 @@ services:
       - redis
     env_file:
       - envs/local.env
+    volumes:
+      - ./pypistats/:/app/pypistats/
+      - ./migrations/:/app/migrations/
   # celery workers
   celery:
     build:
@@ -37,6 +41,9 @@ services:
       - postgresql
     env_file:
       - envs/local.env
+    volumes:
+      - ./pypistats/:/app/pypistats/
+      - ./migrations/:/app/migrations/
   # apply schema migrations to the databse
   migrate:
     build:
@@ -46,6 +53,9 @@ services:
       - postgresql
     env_file:
       - envs/local.env
+    volumes:
+      - ./pypistats/:/app/pypistats/
+      - ./migrations/:/app/migrations/
   # seed the database
   seeds:
     build:
@@ -56,6 +66,9 @@ services:
       - migrate
     env_file:
       - envs/local.env
+    volumes:
+      - ./pypistats/:/app/pypistats/
+      - ./migrations/:/app/migrations/
   # task queue for celery
   redis:
     image: redis:5.0.7-alpine

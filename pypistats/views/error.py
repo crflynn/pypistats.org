@@ -1,5 +1,6 @@
 """Error page handlers."""
 from flask import Blueprint
+from flask import url_for
 
 blueprint = Blueprint("error", __name__, template_folder="templates")
 
@@ -20,6 +21,11 @@ def handle_401(err):
 def handle_404(err):
     """Return 404."""
     return "404", 404
+
+
+@blueprint.app_errorhandler(429)
+def handle_429(err):
+    return f"""<a href="{url_for("api.api")}#etiquette">429 RATE LIMIT EXCEEDED</a>""", 429
 
 
 @blueprint.app_errorhandler(500)

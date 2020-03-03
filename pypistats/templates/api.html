@@ -33,6 +33,15 @@
         in a relatively short amount of time. <a
             href="https://packaging.python.org/guides/analyzing-pypi-package-downloads/">Here is a quick guide</a>.
     </p>
+    <p>
+        If you want to regularly fetch download counts for a particular package or set of packages, cache your results.
+        The data provided here is updated <b>once</b> daily, so you should not need to fetch results from the same API
+        endpoint more than once per day.
+    </p>
+    <h2>Rate Limiting</h2>
+    <p>
+        IP-based rate limiting is imposed application-wide.
+    </p>
     <h2>API Client</h2>
     <p>
         The <a href="{{ url_for('general.package_page', package='pypistats') }}">pypistats</a> <a

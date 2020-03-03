@@ -67,4 +67,4 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False  # Allows form testing
 
 
-configs = {"dev": DevConfig, "local": LocalConfig, "prod": ProdConfig, "test": TestConfig}
+configs = {"development": DevConfig, "local": LocalConfig, "production": ProdConfig, "test": TestConfig}
