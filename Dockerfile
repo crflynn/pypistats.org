@@ -17,7 +17,7 @@ RUN useradd -m python && \
 USER python
 
 # Set the poetry version
-ARG POETRY_VERSION=1.0.3
+ARG POETRY_VERSION=1.0.5
 # Set to ensure logs are output promptly
 ENV PYTHONUNBUFFERED=1
 # Update the path
@@ -33,7 +33,8 @@ ADD poetry.lock .
 # Install all the dependencies and cleanup
 RUN poetry config virtualenvs.create false && \
     poetry run pip install --user -U pip && \
-    poetry install --no-dev
+    poetry install --no-dev && \
+    "yes" | poetry cache clear --all pypi
 
 # Add everything
 ADD . .
