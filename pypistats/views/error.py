@@ -22,6 +22,11 @@ def handle_404(err):
     return "404", 404
 
 
+@blueprint.app_errorhandler(429)
+def handle_429(err):
+    return """<a href="https://pypistats.org/api/#etiquette">429 RATE LIMIT EXCEEDED</a>""", 429
+
+
 @blueprint.app_errorhandler(500)
 def handle_500(err):
     """Return 500."""
