@@ -6,6 +6,10 @@ README.rst
 docs/
 migrations/
 tests/
+envs/
+terraform/
+pypistats.egg-info/
+.idea/
 
 # mac osx
 .DS_Store

@@ -1,5 +1,7 @@
 # credentials
 *.env
+envs/
+terraform/
 
 # mac osx
 .DS_Store
@@ -7,6 +9,7 @@
 # python bytecode
 *.py[cod]
 __pycache__
+pypistats.egg-info/
 
 # ignore
 ignore/
