@@ -1,4 +1,4 @@
-FROM python:3.7.5-slim
+FROM python:3.8.5-slim
 
 # Add build deps for python packages
 # libpq-dev is required to install psycopg2-binary
@@ -17,7 +17,7 @@ RUN useradd -m python && \
 USER python
 
 # Set the poetry version
-ARG POETRY_VERSION=1.0.5
+ARG POETRY_VERSION=1.0.9
 # Set to ensure logs are output promptly
 ENV PYTHONUNBUFFERED=1
 # Update the path

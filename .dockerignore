@@ -1,11 +1,11 @@
 # project
 .git
-.gitignore
+.gitignoreold
 .dockerignore
-.isort.cfg
 .tool-versions
 docker-compose.yml
 envs/
+.venv/
 scripts/
 pypistats.egg-info/
 Dockerfile
@@ -32,6 +32,3 @@ dump.rdb
 
 # intellij
 .idea/
-
-# terraform
-terraform/

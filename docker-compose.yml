@@ -1,4 +1,8 @@
 version: '3'
+
+volumes:
+    pgdata: {}
+
 services:
   # flask webserver
   web:
@@ -8,7 +12,7 @@ services:
     depends_on:
       - postgresql
     env_file:
-      - envs/local.env
+      - .env.sample
     # enable autorebuilding
     environment:
       - FLASK_ENV=development
@@ -27,7 +31,7 @@ services:
     depends_on:
       - redis
     env_file:
-      - envs/local.env
+      - .env.sample
     volumes:
       - ./pypistats/:/app/pypistats/
       - ./migrations/:/app/migrations/
@@ -40,7 +44,7 @@ services:
       - redis
       - postgresql
     env_file:
-      - envs/local.env
+      - .env.sample
     volumes:
       - ./pypistats/:/app/pypistats/
       - ./migrations/:/app/migrations/
@@ -52,7 +56,7 @@ services:
     depends_on:
       - postgresql
     env_file:
-      - envs/local.env
+      - .env.sample
     volumes:
       - ./pypistats/:/app/pypistats/
       - ./migrations/:/app/migrations/
@@ -65,7 +69,7 @@ services:
       - postgresql
       - migrate
     env_file:
-      - envs/local.env
+      - .env.sample
     volumes:
       - ./pypistats/:/app/pypistats/
       - ./migrations/:/app/migrations/
@@ -82,3 +86,5 @@ services:
     ports:
     # 5432 is likely already taken by host's postgresql
     - "5433:5432"
+    volumes:
+    - pgdata:/var/lib/postgresql/data

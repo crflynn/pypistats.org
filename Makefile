@@ -5,18 +5,23 @@ PYPISTATS_WEB_CONTAINER=pypistatsorg_web_1
 fmt:
 	poetry run isort -y
 	poetry run black .
-	terraform fmt
 
 # launch the application in docker-compose
 .PHONY: pypistats
 pypistats:
+	docker-compose down
 	docker-compose build
 	docker-compose up
+
+# bring down the application and destroy the db volumes
+.PHONY: cleanup
+cleanup:
+	docker-compose down -v
 
 # setup a local environment
 .PHONY: setup
 setup:
-	brew install asdf
+	brew install asdf || true
 	asdf install
 	poetry install
 

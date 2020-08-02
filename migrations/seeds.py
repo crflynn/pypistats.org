@@ -2,6 +2,7 @@ import datetime
 import logging
 import random
 import subprocess
+import sys
 
 from pypistats.application import create_app
 from pypistats.application import db
@@ -14,6 +15,10 @@ from pypistats.models.download import SystemDownloadCount
 # required to use the db models outside of the context of the app
 app = create_app()
 app.app_context().push()
+
+if db.session.query(RecentDownloadCount.package).count() > 0:
+    print("Seeds already exist.")
+    sys.exit(0)
 
 # use the currently installed dependencies as seed packages
 result = subprocess.run(["poetry", "show"], stdout=subprocess.PIPE)
