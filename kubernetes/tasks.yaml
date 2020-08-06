@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pypistats-tasks
+  namespace: pypistats
+  labels:
+    app: pypistats
+    component: tasks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pypistats
+      component: tasks
+  template:
+    metadata:
+      labels:
+        app: pypistats
+        component: tasks
+    spec:
+      containers:
+      - name: pypistats-beat
+        image: pypistats:latest
+        imagePullPolicy: IfNotPresent
+        args: ["beat"]
+        envFrom:
+        - secretRef:
+            name: pypistats-secrets
+      - name: pypistats-celery
+        image: pypistats:latest
+        imagePullPolicy: IfNotPresent
+        args: ["celery"]
+        envFrom:
+        - secretRef:
+            name: pypistats-secrets
