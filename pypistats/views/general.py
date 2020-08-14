@@ -45,6 +45,11 @@ def index():
     return render_template("index.html", form=form, user=g.user, package_count=package_count)
 
 
+@blueprint.route("/health")
+def health():
+    return "OK"
+
+
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
 def search(package):
     """Render the home page."""

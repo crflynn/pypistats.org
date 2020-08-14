@@ -20,7 +20,7 @@ spec:
     spec:
       initContainers:
       - name: migrate
-        image: us.gcr.io/pypistats-org/pypistats:latest
+        image: us.gcr.io/pypistats-org/pypistats:1
         imagePullPolicy: Always
         envFrom:
         - secretRef:
@@ -28,7 +28,7 @@ spec:
         args: ["migrate"]
       containers:
       - name: web
-        image: us.gcr.io/pypistats-org/pypistats:latest
+        image: us.gcr.io/pypistats-org/pypistats:1
         imagePullPolicy: Always
         envFrom:
         - secretRef:
@@ -36,6 +36,12 @@ spec:
         args: ["web"]
         ports:
         - containerPort: 5000
+        readinessProbe:
+            httpGet:
+                path: /health
+                port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 
 ---
 
@@ -47,9 +53,29 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 5000
-      nodePort: 30500
+      targetPort: 5000
   selector:
     app: pypistats
     component: web
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: web
+  namespace: pypistats
+spec:
+  backend:
+    serviceName: web
+    servicePort: http
+  rules:
+   - http:
+      paths:
+      - backend:
+          serviceName: web
+          servicePort: http
+        path: /

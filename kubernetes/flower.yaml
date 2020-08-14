@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: pypistats-flower
-        image: us.gcr.io/pypistats-org/pypistats:latest
+        image: us.gcr.io/pypistats-org/pypistats:1
         imagePullPolicy: Always
         args: ["flower"]
         envFrom:

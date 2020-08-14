@@ -5,7 +5,6 @@ from flask import g
 from flask import session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_sslify import SSLify
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from pypistats.application import create_app
@@ -17,8 +16,6 @@ from pypistats.models.user import User
 env = os.environ.get("ENV", "development")
 
 app = create_app(configs[env])
-if env in ("production", "staging"):
-    sslify = SSLify(app)
 
 # Rate limiting per IP/worker
 app.wsgi_app = ProxyFix(app.wsgi_app)

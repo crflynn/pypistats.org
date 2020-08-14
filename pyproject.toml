@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pypistatsorg"
-version = "0.1.0"
+version = "1"
 description = "Download counts dashboard for python packages"
 authors = ["Flynn <crf204@gmail.com>"]
 
@@ -13,7 +13,6 @@ flask-sqlalchemy = "^2.4"
 flask-migrate = "^2.5"
 flask-login = "^0.4.1"
 flask-wtf = "^0.14.2"
-flask-sslify = "^0.1.5"
 gunicorn = "^19.9"
 requests = "^2.22"
 celery = "^4.3"

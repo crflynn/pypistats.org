@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-docker build -it us.gcr.io/pypistats-org/pypistats .
-docker push us.gcr.io/pypistats-org/pypistats
+docker build -t us.gcr.io/pypistats-org/pypistats:$(poetry version | tail -c +14) .
+docker push us.gcr.io/pypistats-org/pypistats:$(poetry version | tail -c +14)
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
