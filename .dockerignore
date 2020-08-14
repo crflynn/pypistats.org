@@ -7,17 +7,18 @@ docker-compose.yml
 envs/
 .venv/
 scripts/
+kubernetes/
 pypistats.egg-info/
 Dockerfile
 Makefile
 README.rst
 
 # mac osx
-.DS_Store
+**/.DS_Store
 
 # python bytecode
 *.py[cod]
-__pycache__
+**/__pycache__/
 
 # celery
 celerybeat-schedule
@@ -32,3 +33,6 @@ dump.rdb
 
 # intellij
 .idea/
+
+# secrets
+*.env

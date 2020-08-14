@@ -3,7 +3,7 @@ PYPISTATS_WEB_CONTAINER=pypistatsorg_web_1
 # format everything
 .PHONY: fmt
 fmt:
-	poetry run isort -y
+	poetry run isort .
 	poetry run black .
 
 # launch the application in docker-compose

@@ -20,10 +20,11 @@ celery = "^4.3"
 psycopg2-binary = "^2.8"
 redis = "^3.3"
 flask-limiter = "^1.2.1"
+flower = "^0.9.5"
 
 [tool.poetry.dev-dependencies]
-black = {version = "^19.10b0", allow-prereleases = true}
-isort = "^4.3"
+black = "^19.10b0"
+isort = "^5.3"
 
 [tool.black]
 line-length = 120

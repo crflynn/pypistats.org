@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pypistats-web
+  name: web
   namespace: pypistats
   labels:
     app: pypistats
     component: web
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: pypistats
@@ -19,28 +19,30 @@ spec:
         component: web
     spec:
       initContainers:
-      - name: pypistats-migrate
-        image: pypistats:latest
-        imagePullPolicy: IfNotPresent
+      - name: migrate
+        image: us.gcr.io/pypistats-org/pypistats:latest
+        imagePullPolicy: Always
         envFrom:
         - secretRef:
             name: pypistats-secrets
         args: ["migrate"]
       containers:
-      - name: pypistats-web
-        image: pypistats:latest
-        imagePullPolicy: IfNotPresent
+      - name: web
+        image: us.gcr.io/pypistats-org/pypistats:latest
+        imagePullPolicy: Always
         envFrom:
         - secretRef:
             name: pypistats-secrets
         args: ["web"]
         ports:
         - containerPort: 5000
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: pypistats-web
+  name: web
   namespace: pypistats
 spec:
   type: NodePort

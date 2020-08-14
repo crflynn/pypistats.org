@@ -17,7 +17,7 @@ RUN useradd -m python && \
 USER python
 
 # Set the poetry version
-ARG POETRY_VERSION=1.0.9
+ARG POETRY_VERSION=1.0.10
 # Set to ensure logs are output promptly
 ENV PYTHONUNBUFFERED=1
 # Update the path
@@ -38,9 +38,6 @@ RUN poetry config virtualenvs.create false && \
 
 # Add everything
 ADD . .
-
-# Run flask on port 5000
-EXPOSE 5000
 
 # Set the entrypoint script
 ENTRYPOINT ["./docker-entrypoint.sh"]

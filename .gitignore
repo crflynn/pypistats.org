@@ -149,6 +149,7 @@ cython_debug/
 .elasticbeanstalk/
 # Creds
 envs/
+*.env
 
 
 

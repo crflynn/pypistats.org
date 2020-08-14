@@ -1,35 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tasks
+  name: flower
   namespace: pypistats
   labels:
     app: pypistats
-    component: tasks
+    component: flower
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: pypistats
-      component: tasks
+      component: flower
   template:
     metadata:
       labels:
         app: pypistats
-        component: tasks
+        component: flower
     spec:
       containers:
-      - name: beat
+      - name: pypistats-flower
         image: us.gcr.io/pypistats-org/pypistats:latest
         imagePullPolicy: Always
-        args: ["beat"]
+        args: ["flower"]
         envFrom:
         - secretRef:
             name: pypistats-secrets
-      - name: celery
-        image: us.gcr.io/pypistats-org/pypistats:latest
-        imagePullPolicy: Always
-        args: ["celery"]
-        envFrom:
-        - secretRef:
-            name: pypistats-secrets
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower
+  labels:
+    app: pypistats
+    component: flower
+spec:
+  ports:
+  - port: 5555
+    targetPort: 5555
+  selector:
+    app: pypistats
+    component: flower

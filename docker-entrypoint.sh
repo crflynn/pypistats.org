@@ -7,7 +7,7 @@ fi
 
 if [[ "$1" = "web" ]]
 then
-  exec poetry run gunicorn -b 0.0.0.0:5000 -w 4 --access-logfile - --error-log - --access-logformat "%({x-forwarded-for}i)s %(h)s %(l)s %(u)s %(t)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\"" pypistats.run:app
+  exec poetry run gunicorn -b 0.0.0.0:5000 -w 2 --access-logfile - --error-log - --access-logformat "%({x-forwarded-for}i)s %(h)s %(l)s %(u)s %(t)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\"" pypistats.run:app
 fi
 
 if [[ "$1" = "celery" ]]
@@ -18,6 +18,11 @@ fi
 if [[ "$1" = "beat" ]]
 then
   exec poetry run celery beat -A pypistats.run.celery -l info
+fi
+
+if [[ "$1" = "flower" ]]
+then
+  exec poetry run flower -A pypistats.run.celery -l info
 fi
 
 if [[ "$1" = "migrate" ]]
