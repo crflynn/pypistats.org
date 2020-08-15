@@ -1,13 +1,13 @@
 """PyPIStats application."""
-from celery import Celery
 from celery import Task
 from flask import Flask
 
 from pypistats import views
+from pypistats.config import DevConfig
+from pypistats.extensions import celery
 from pypistats.extensions import db
 from pypistats.extensions import github
 from pypistats.extensions import migrate
-from pypistats.settings import DevConfig
 
 
 def create_app(config_object=DevConfig):
@@ -16,13 +16,13 @@ def create_app(config_object=DevConfig):
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)
+    init_celery(celery, app)
     return app
 
 
-def create_celery(app):
+def init_celery(celery_, app):
     """Create a celery object."""
-    celery = Celery(app.import_name, broker=app.config["CELERY_BROKER_URL"])
-    celery.config_from_object(app.config)
+    celery_.conf.update(app.config)
 
     class ContextTask(Task):
         abstract = True
@@ -31,12 +31,12 @@ def create_celery(app):
             with app.app_context():
                 return Task.__call__(self, *args, **kwargs)
 
-    celery.Task = ContextTask
-    return celery
+    celery_.Task = ContextTask
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
+    app.register_blueprint(views.admin.blueprint)
     app.register_blueprint(views.api.blueprint)
     app.register_blueprint(views.error.blueprint)
     app.register_blueprint(views.general.blueprint)

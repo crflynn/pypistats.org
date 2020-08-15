@@ -1,6 +1,6 @@
 """User page for tracking packages."""
-from flask import abort
 from flask import Blueprint
+from flask import abort
 from flask import flash
 from flask import g
 from flask import redirect
@@ -14,16 +14,15 @@ from pypistats.models.download import RecentDownloadCount
 from pypistats.models.user import MAX_FAVORITES
 from pypistats.models.user import User
 
-
 blueprint = Blueprint("user", __name__, template_folder="templates")
 
 
 @github.access_token_getter
 def token_getter():
     """Get the token for a user."""
-    user = g.user
-    if user is not None:
-        return user.token
+    this_user = g.user
+    if this_user is not None:
+        return this_user.token
 
 
 @blueprint.route("/github-callback")
@@ -36,12 +35,12 @@ def authorized(oauth_token):
         return redirect(next_url)
 
     # Ensure a user with token doesn't already exist
-    user = User.query.filter_by(token=oauth_token).first()
-    if user is None:
-        user = User(token=oauth_token)
+    this_user = User.query.filter_by(token=oauth_token).first()
+    if this_user is None:
+        this_user = User(token=oauth_token)
 
     # Set this to use API to get user data
-    g.user = user
+    g.user = this_user
     user_data = github.get("user")
 
     # extract data
@@ -50,24 +49,19 @@ def authorized(oauth_token):
     avatar_url = user_data["avatar_url"]
 
     # Create/update the user
-    user = User.query.filter_by(uid=uid).first()
-    if user is None:
-        user = User(
-            token=oauth_token,
-            uid=uid,
-            username=username,
-            avatar_url=avatar_url,
-        )
+    this_user = User.query.filter_by(uid=uid).first()
+    if this_user is None:
+        this_user = User(token=oauth_token, uid=uid, username=username, avatar_url=avatar_url)
     else:
-        user.username = username
-        user.avatar_url = avatar_url
-        user.token = oauth_token
+        this_user.username = username
+        this_user.avatar_url = avatar_url
+        this_user.token = oauth_token
 
-    user.save()
+    this_user.save()
 
-    session["username"] = user.username
-    session["user_id"] = user.id
-    g.user = user
+    session["username"] = this_user.username
+    session["user_id"] = this_user.id
+    g.user = this_user
 
     return redirect(next_url)
 

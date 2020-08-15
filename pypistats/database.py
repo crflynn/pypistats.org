@@ -1,7 +1,6 @@
 """Database classes and models."""
 from pypistats.extensions import db
 
-
 Column = db.Column
 basestring = (str, bytes)
 
@@ -54,9 +53,6 @@ class SurrogatePK(object):
     @classmethod
     def get_by_id(cls, record_id):
         """Get record by ID."""
-        if any(
-                (isinstance(record_id, basestring) and record_id.isdigit(),
-                 isinstance(record_id, (int, float))),
-        ):
+        if any((isinstance(record_id, basestring) and record_id.isdigit(), isinstance(record_id, (int, float)))):
             return cls.query.get(int(record_id))
         return None

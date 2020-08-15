@@ -10,17 +10,13 @@ class OverallDownloadCount(Model):
     __tablename__ = "overall"
 
     date = Column(db.Date, primary_key=True, nullable=False)
-    package = Column(
-        db.String(128), primary_key=True, nullable=False, index=True
-    )
+    package = Column(db.String(128), primary_key=True, nullable=False, index=True)
     # with_mirrors or without_mirrors
     category = Column(db.String(16), primary_key=True, nullable=False)
     downloads = Column(db.Integer(), nullable=False)
 
     def __repr__(self):
-        return "<OverallDownloadCount {}".format(
-            f"{str(self.date)} - {str(self.package)} - {str(self.category)}"
-        )
+        return "<OverallDownloadCount {}".format(f"{str(self.date)} - {str(self.package)} - {str(self.category)}")
 
 
 class PythonMajorDownloadCount(Model):
@@ -29,17 +25,13 @@ class PythonMajorDownloadCount(Model):
     __tablename__ = "python_major"
 
     date = Column(db.Date, primary_key=True, nullable=False)
-    package = Column(
-        db.String(128), primary_key=True, nullable=False, index=True
-    )
+    package = Column(db.String(128), primary_key=True, nullable=False, index=True)
     # python_major version, 2 or 3 (or null)
     category = Column(db.String(4), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
 
     def __repr__(self):
-        return "<PythonMajorDownloadCount {}".format(
-            f"{str(self.date)} - {str(self.package)} - {str(self.category)}"
-        )
+        return "<PythonMajorDownloadCount {}".format(f"{str(self.date)} - {str(self.package)} - {str(self.category)}")
 
 
 class PythonMinorDownloadCount(Model):
@@ -48,17 +40,13 @@ class PythonMinorDownloadCount(Model):
     __tablename__ = "python_minor"
 
     date = Column(db.Date, primary_key=True)
-    package = Column(
-        db.String(128), primary_key=True, nullable=False, index=True
-    )
+    package = Column(db.String(128), primary_key=True, nullable=False, index=True)
     # python_minor version, e.g. 2.7 or 3.6 (or null)
     category = Column(db.String(4), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
 
     def __repr__(self):
-        return "<PythonMinorDownloadCount {}".format(
-            f"{str(self.date)} - {str(self.package)} - {str(self.category)}"
-        )
+        return "<PythonMinorDownloadCount {}".format(f"{str(self.date)} - {str(self.package)} - {str(self.category)}")
 
 
 RECENT_CATEGORIES = ["day", "week", "month"]
@@ -69,17 +57,13 @@ class RecentDownloadCount(Model):
 
     __tablename__ = "recent"
 
-    package = Column(
-        db.String(128), primary_key=True, nullable=False, index=True
-    )
+    package = Column(db.String(128), primary_key=True, nullable=False, index=True)
     # recency, e.g. day, week, month
     category = Column(db.String(8), primary_key=True, nullable=False)
     downloads = Column(db.BigInteger(), nullable=False)
 
     def __repr__(self):
-        return "<RecentDownloadCount {}>".format(
-            f"{str(self.package)} - {str(self.category)}"
-        )
+        return "<RecentDownloadCount {}>".format(f"{str(self.package)} - {str(self.category)}")
 
 
 class SystemDownloadCount(Model):
@@ -88,14 +72,10 @@ class SystemDownloadCount(Model):
     __tablename__ = "system"
 
     date = Column(db.Date, primary_key=True)
-    package = Column(
-        db.String(128), primary_key=True, nullable=False, index=True
-    )
+    package = Column(db.String(128), primary_key=True, nullable=False, index=True)
     # system, e.g. Windows or Linux or Darwin (or null)
     category = Column(db.String(8), primary_key=True, nullable=True)
     downloads = Column(db.Integer(), nullable=False)
 
     def __repr__(self):
-        return "<SystemDownloadCount {}".format(
-            f"{str(self.date)} - {str(self.package)} - {str(self.category)}"
-        )
+        return "<SystemDownloadCount {}".format(f"{str(self.date)} - {str(self.package)} - {str(self.category)}")

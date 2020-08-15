@@ -1,42 +1,34 @@
 """General pages."""
+import datetime
+import re
 from collections import defaultdict
 from copy import deepcopy
-import datetime
-import os
-import re
 
-from flask import abort
+import requests
 from flask import Blueprint
 from flask import current_app
 from flask import g
-from flask import json
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask_wtf import FlaskForm
-import requests
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
+from pypistats.models.download import RECENT_CATEGORIES
 from pypistats.models.download import OverallDownloadCount
 from pypistats.models.download import PythonMajorDownloadCount
 from pypistats.models.download import PythonMinorDownloadCount
-from pypistats.models.download import RECENT_CATEGORIES
 from pypistats.models.download import RecentDownloadCount
 from pypistats.models.download import SystemDownloadCount
 
 blueprint = Blueprint("general", __name__, template_folder="templates")
 
 
-MODELS = [
-    OverallDownloadCount,
-    PythonMajorDownloadCount,
-    PythonMinorDownloadCount,
-    SystemDownloadCount,
-]
+MODELS = [OverallDownloadCount, PythonMajorDownloadCount, PythonMinorDownloadCount, SystemDownloadCount]
 
 
-class MyForm(FlaskForm):
+class PackageSearchForm(FlaskForm):
     """Search form."""
 
     name = StringField("Package: ", validators=[DataRequired()])
@@ -45,40 +37,40 @@ class MyForm(FlaskForm):
 @blueprint.route("/", methods=("GET", "POST"))
 def index():
     """Render the home page."""
-    form = MyForm()
+    form = PackageSearchForm()
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package.lower()}")
-    package_count = \
-        RecentDownloadCount.query.filter_by(category="month").count()
-    return render_template(
-        "index.html",
-        form=form,
-        user=g.user,
-        package_count=package_count
-    )
+    package_count = RecentDownloadCount.query.filter_by(category="month").count()
+    return render_template("index.html", form=form, user=g.user, package_count=package_count)
+
+
+@blueprint.route("/health")
+def health():
+    return "OK"
 
 
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
 def search(package):
     """Render the home page."""
     package = package.replace(".", "-")
-    form = MyForm()
+    form = PackageSearchForm()
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package}")
-    results = RecentDownloadCount.query.filter(
-        RecentDownloadCount.package.like(f"{package}%"),
-        RecentDownloadCount.category == "month").\
-        order_by(RecentDownloadCount.package).\
-        limit(20).all()
+    results = (
+        RecentDownloadCount.query.filter(
+            RecentDownloadCount.package.like(f"{package}%"), RecentDownloadCount.category == "month"
+        )
+        .order_by(RecentDownloadCount.package)
+        .limit(20)
+        .all()
+    )
     packages = [r.package for r in results]
     if len(packages) == 1:
         package = packages[0]
         return redirect(f"/packages/{package}")
-    return render_template(
-        "search.html", search=True, form=form, packages=packages, user=g.user
-    )
+    return render_template("search.html", search=True, form=form, packages=packages, user=g.user)
 
 
 @blueprint.route("/about")
@@ -106,8 +98,7 @@ def package_page(package):
 
     start_date = str(datetime.date.today() - datetime.timedelta(lookback))
 
-    recent_downloads = RecentDownloadCount.query.\
-        filter_by(package=package).all()
+    recent_downloads = RecentDownloadCount.query.filter_by(package=package).all()
 
     if len(recent_downloads) == 0:
         return redirect(f"/search/{package}")
@@ -119,24 +110,24 @@ def package_page(package):
     metadata = None
     if package != "__all__":
         try:
-            metadata = requests.get(
-                f"https://pypi.python.org/pypi/{package}/json",
-                timeout=5).json()
+            metadata = requests.get(f"https://pypi.python.org/pypi/{package}/json", timeout=5).json()
             if metadata["info"].get("requires_dist", None):
-                metadata["requires"] = []
+                requires = set()
                 for required in metadata["info"]["requires_dist"]:
-                    metadata["requires"].append(
-                        re.split(r"[^0-9a-zA-Z_.-]+", required)[0]
-                    )
+                    requires.add(re.split(r"[^0-9a-zA-Z_.-]+", required)[0])
+                metadata["requires"] = sorted(list(requires))
         except Exception:
             pass
 
     # Get data from db
     model_data = []
     for model in MODELS:
-        records = model.query.filter_by(package=package).\
-            filter(model.date >= start_date).\
-            order_by(model.date, model.category).all()
+        records = (
+            model.query.filter_by(package=package)
+            .filter(model.date >= start_date)
+            .order_by(model.date, model.category)
+            .all()
+        )
 
         if model == OverallDownloadCount:
             metrics = ["downloads"]
@@ -144,11 +135,7 @@ def package_page(package):
             metrics = ["downloads", "percentages"]
 
         for metric in metrics:
-            model_data.append({
-                "metric": metric,
-                "name": model.__tablename__,
-                "data": data_function[metric](records),
-            })
+            model_data.append({"metric": metric, "name": model.__tablename__, "data": data_function[metric](records)})
 
     # Build the plots
     plots = []
@@ -169,11 +156,13 @@ def package_page(package):
 
         # Add titles
         if model["metric"] == "percentages":
-            plot["layout"]["title"] = \
-                f"Daily Download Proportions of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
+            plot["layout"][
+                "title"
+            ] = f"Daily Download Proportions of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
         else:
-            plot["layout"]["title"] = \
-                f"Daily Download Quantity of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
+            plot["layout"][
+                "title"
+            ] = f"Daily Download Quantity of {package} package - {model['name'].title().replace('_', ' ')}"  # noqa
 
         # Explicitly set range
         plot["layout"]["xaxis"]["range"] = [str(records[0].date - datetime.timedelta(1)), str(datetime.date.today())]
@@ -183,31 +172,18 @@ def package_page(package):
         drange = (datetime.date.today() - records[0].date).days
         for k in [30, 60, 90, 120, 9999]:
             if k <= drange:
-                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append({
-                    "step": "day",
-                    "stepmode": "backward",
-                    "count": k+1,
-                    "label": f"{k}d"
-                })
+                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append(
+                    {"step": "day", "stepmode": "backward", "count": k + 1, "label": f"{k}d"}
+                )
             else:
-                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append({
-                    "step": "day",
-                    "stepmode": "backward",
-                    "count": drange + 1,
-                    "label": "all"
-                })
+                plot["layout"]["xaxis"]["rangeselector"]["buttons"].append(
+                    {"step": "day", "stepmode": "backward", "count": drange + 1, "label": "all"}
+                )
                 break
 
         plots.append(plot)
 
-    return render_template(
-        "package.html",
-        package=package,
-        plots=plots,
-        metadata=metadata,
-        recent=recent,
-        user=g.user
-    )
+    return render_template("package.html", package=package, plots=plots, metadata=metadata, recent=recent, user=g.user)
 
 
 def get_download_data(records):
@@ -312,28 +288,25 @@ def get_proportion_data(records):
     return data
 
 
-data_function = {
-    "downloads": get_download_data,
-    "percentages": get_proportion_data,
-}
+data_function = {"downloads": get_download_data, "percentages": get_proportion_data}
 
 
 @blueprint.route("/top")
 def top():
     """Render the top packages page."""
-    top = []
+    top_ = []
     for category in ("day", "week", "month"):
-        downloads = RecentDownloadCount.query.filter_by(category=category).\
-            filter(RecentDownloadCount.package != "__all__").\
-            order_by(RecentDownloadCount.downloads.desc()).limit(20).all()
-        top.append({
-            "category": category,
-            "packages": [{
-                "package": d.package,
-                "downloads": d.downloads,
-            } for d in downloads]
-        })
-    return render_template("top.html", top=top, user=g.user)
+        downloads = (
+            RecentDownloadCount.query.filter_by(category=category)
+            .filter(RecentDownloadCount.package != "__all__")
+            .order_by(RecentDownloadCount.downloads.desc())
+            .limit(20)
+            .all()
+        )
+        top_.append(
+            {"category": category, "packages": [{"package": d.package, "downloads": d.downloads} for d in downloads]}
+        )
+    return render_template("top.html", top=top_, user=g.user)
 
 
 @blueprint.route("/status")
