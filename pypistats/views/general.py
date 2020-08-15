@@ -28,7 +28,7 @@ blueprint = Blueprint("general", __name__, template_folder="templates")
 MODELS = [OverallDownloadCount, PythonMajorDownloadCount, PythonMinorDownloadCount, SystemDownloadCount]
 
 
-class MyForm(FlaskForm):
+class PackageSearchForm(FlaskForm):
     """Search form."""
 
     name = StringField("Package: ", validators=[DataRequired()])
@@ -37,7 +37,7 @@ class MyForm(FlaskForm):
 @blueprint.route("/", methods=("GET", "POST"))
 def index():
     """Render the home page."""
-    form = MyForm()
+    form = PackageSearchForm()
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package.lower()}")
@@ -54,7 +54,7 @@ def health():
 def search(package):
     """Render the home page."""
     package = package.replace(".", "-")
-    form = MyForm()
+    form = PackageSearchForm()
     if form.validate_on_submit():
         package = form.name.data
         return redirect(f"/search/{package}")
@@ -112,9 +112,10 @@ def package_page(package):
         try:
             metadata = requests.get(f"https://pypi.python.org/pypi/{package}/json", timeout=5).json()
             if metadata["info"].get("requires_dist", None):
-                metadata["requires"] = []
+                requires = set()
                 for required in metadata["info"]["requires_dist"]:
-                    metadata["requires"].append(re.split(r"[^0-9a-zA-Z_.-]+", required)[0])
+                    requires.add(re.split(r"[^0-9a-zA-Z_.-]+", required)[0])
+                metadata["requires"] = sorted(list(requires))
         except Exception:
             pass
 

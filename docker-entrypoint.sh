@@ -12,17 +12,17 @@ fi
 
 if [[ "$1" = "celery" ]]
 then
-  exec poetry run celery -A pypistats.run.celery worker -l info
+  exec poetry run celery -A pypistats.extensions.celery worker -l info --concurrency=1
 fi
 
 if [[ "$1" = "beat" ]]
 then
-  exec poetry run celery beat -A pypistats.run.celery -l info
+  exec poetry run celery -A pypistats.extensions.celery beat -l info
 fi
 
 if [[ "$1" = "flower" ]]
 then
-  exec poetry run flower -A pypistats.run.celery -l info
+  exec poetry run flower -A pypistats.extensions.celery -l info
 fi
 
 if [[ "$1" = "migrate" ]]

@@ -16,7 +16,7 @@ def get_db_uri():
     )
 
 
-class Config(object):
+class Config:
     """Base configuration."""
 
     APP_DIR = os.path.abspath(os.path.dirname(__file__))

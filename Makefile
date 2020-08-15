@@ -1,7 +1,4 @@
-PYPISTATS_WEB_CONTAINER=pypistatsorg_web_1
-
 # format everything
-.PHONY: fmt
 fmt:
 	poetry run isort .
 	poetry run black .
@@ -14,20 +11,23 @@ pypistats:
 	docker-compose up
 
 # bring down the application and destroy the db volumes
-.PHONY: cleanup
 cleanup:
 	docker-compose down -v
 
 # setup a local environment
-.PHONY: setup
 setup:
 	brew install asdf || true
 	asdf install
 	poetry install
 
-# create a migration
-# ensure the app is running in compose
-# run with `make migration MIGRATION_NAME=my_migration_name`
-.PHONY: migration
-migration:
-	docker exec -it $(PYPISTATS_WEB_CONTAINER) poetry run flask db migrate -m "$(MIGRATION_NAME)"
+# deploy to gke
+deploy:
+	sh kubernetes/deploy.sh
+
+# port forward flower
+pfflower:
+	open http://localhost:7777 && kubectl get pods -n pypistats | grep flower | awk '{print $$1}' | xargs -I % kubectl port-forward % 7777:5555
+
+# port forward web
+pfweb:
+	open http://localhost:7000 && kubectl get pods -n pypistats | grep web | awk '{print $$1}' | xargs -I % kubectl port-forward % 7000:5000

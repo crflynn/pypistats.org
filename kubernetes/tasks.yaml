@@ -20,14 +20,14 @@ spec:
     spec:
       containers:
       - name: beat
-        image: us.gcr.io/pypistats-org/pypistats:1
+        image: us.gcr.io/pypistats-org/pypistats:5
         imagePullPolicy: Always
         args: ["beat"]
         envFrom:
         - secretRef:
             name: pypistats-secrets
       - name: celery
-        image: us.gcr.io/pypistats-org/pypistats:1
+        image: us.gcr.io/pypistats-org/pypistats:5
         imagePullPolicy: Always
         args: ["celery"]
         envFrom:

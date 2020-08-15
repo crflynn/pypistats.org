@@ -20,7 +20,7 @@ spec:
     spec:
       initContainers:
       - name: migrate
-        image: us.gcr.io/pypistats-org/pypistats:1
+        image: us.gcr.io/pypistats-org/pypistats:5
         imagePullPolicy: Always
         envFrom:
         - secretRef:
@@ -28,7 +28,7 @@ spec:
         args: ["migrate"]
       containers:
       - name: web
-        image: us.gcr.io/pypistats-org/pypistats:1
+        image: us.gcr.io/pypistats-org/pypistats:5
         imagePullPolicy: Always
         envFrom:
         - secretRef:

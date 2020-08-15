@@ -12,8 +12,7 @@
         on Google BigQuery. All aggregate download stats ignore known PyPI mirrors (such as
         <a href="{{ url_for('general.package_page', package='bandersnatch') }}">bandersnatch</a>) unless noted
         otherwise.</p>
-    <p>PyPI Stats attempts to operate within the free tier of its hosted services. For this reason, aggregate data is
-        only retained for 180 days.</p>
+    <p>PyPI Stats retains data for 180 days.</p>
     <h3>API</h3>
     <p>A simple
         <a href="{{ url_for('api.api') }}">JSON API</a>
@@ -33,49 +32,6 @@
                 href="https://github.com/hugovk/pypistats"><img src="https://img.shields.io/pypi/dm/pypistats.svg"></a>
         </li>
     </ul>
-    </p>
-    <h3>Tech</h3>
-    <p>PyPI Stats is a project developed using Python 3.6. Here are some of the tools used to create it:
-    <ul>
-        <li>Framework:
-            <a href="{{ url_for('general.package_page', package='flask') }}">Flask</a>
-        </li>
-        <li>
-            Host:
-            <a href="{{ url_for('general.package_page', package='awscli') }}">AWS</a>
-        </li>
-        <li>Authentication:
-            <a href="{{ url_for('general.package_page', package='github-flask') }}">GitHub OAuth</a>
-        </li>
-        <li>
-            ORM:
-            <a href="{{ url_for('general.package_page', package='sqlalchemy') }}">SQLAlchemy</a>
-        </li>
-        <li>
-            DBAPI:
-            <a href="{{ url_for('general.package_page', package='psycopg2') }}">psycopg2</a>
-        </li>
-        <li>
-            RDBMS:
-            <a href="{{ url_for('general.package_page', package='alembic') }}">alembic</a>
-        </li>
-        <li>
-            Templating:
-            <a href="{{ url_for('general.package_page', package='jinja2') }}">jinja2</a>
-        </li>
-
-        <li>Charts:
-            <a href="{{ url_for('general.package_page', package='plotly') }}">plotly.js</a>
-        </li>
-        <li>Data:
-            <a href="{{ url_for('general.package_page', package='google-cloud-bigquery') }}">Google Cloud's BigQuery</a>
-        </li>
-        <li>
-            <a href="{{ url_for('general.package_page', package='__all__') }}">And many more open source software
-                packages</a>
-        </li>
-    </ul>
-    </p>
     <p>PyPIStats.org is also <a href="https://github.com/crflynn/pypistats.org">open source</a>.</p>
     <h3>Who</h3>
     <p>PyPI Stats was created by

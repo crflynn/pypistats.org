@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+poetry version major
 export PYPISTATS_VERSION=$(poetry version | tail -c +14)
 docker build -t us.gcr.io/pypistats-org/pypistats:${PYPISTATS_VERSION} .
 docker push us.gcr.io/pypistats-org/pypistats:${PYPISTATS_VERSION}

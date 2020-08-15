@@ -1,4 +1,18 @@
-version: "3"
+x-envs: &envs
+  environment:
+    - FLASK_APP=pypistats/run.py
+    - FLASK_ENV=development
+    - FLASK_DEBUG=1
+    - POSTGRESQL_HOST=postgresql
+    - POSTGRESQL_PORT=5432
+    - POSTGRESQL_USERNAME=admin
+    - POSTGRESQL_PASSWORD=root
+    - POSTGRESQL_DBNAME=pypistats
+    - CELERY_BROKER_URL=redis://redis
+    - BASIC_AUTH_USER=user
+    - BASIC_AUTH_PASSWORD=password
+
+version: "3.4"
 
 volumes:
   pgdata: {}
@@ -10,16 +24,7 @@ services:
     command: webdev
     depends_on:
       - postgresql
-    environment:
-      - FLASK_APP=pypistats/run.py
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
-      - POSTGRESQL_HOST=postgresql
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=admin
-      - POSTGRESQL_PASSWORD=root
-      - POSTGRESQL_DBNAME=pypistats
-      - CELERY_BROKER_URL=redis://redis
+    <<: *envs
     ports:
       - "5000:5000"
     volumes:
@@ -30,8 +35,7 @@ services:
     command: beat
     depends_on:
       - redis
-    environment:
-      - CELERY_BROKER_URL=redis://redis
+    <<: *envs
     volumes:
       - "./pypistats/:/app/pypistats/"
   celery:
@@ -41,13 +45,7 @@ services:
     depends_on:
       - redis
       - postgresql
-    environment:
-      - POSTGRESQL_HOST=postgresql
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=admin
-      - POSTGRESQL_PASSWORD=root
-      - POSTGRESQL_DBNAME=pypistats
-      - CELERY_BROKER_URL=redis://redis
+    <<: *envs
     volumes:
       - "./pypistats/:/app/pypistats/"
   flower:
@@ -56,8 +54,7 @@ services:
     command: flower
     depends_on:
       - redis
-    environment:
-      - CELERY_BROKER_URL=redis://redis
+    <<: *envs
     ports:
       - "5555:5555"
     volumes:
@@ -68,13 +65,7 @@ services:
     command: migrate
     depends_on:
       - postgresql
-    environment:
-      - FLASK_APP=pypistats/run.py
-      - POSTGRESQL_HOST=postgresql
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=admin
-      - POSTGRESQL_PASSWORD=root
-      - POSTGRESQL_DBNAME=pypistats
+    <<: *envs
     volumes:
       - "./pypistats/:/app/pypistats/"
       - "./migrations/:/app/migrations/"
@@ -85,13 +76,7 @@ services:
     depends_on:
       - postgresql
       - migrate
-    environment:
-      - FLASK_APP=pypistats/run.py
-      - POSTGRESQL_HOST=postgresql
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=admin
-      - POSTGRESQL_PASSWORD=root
-      - POSTGRESQL_DBNAME=pypistats
+    <<: *envs
     volumes:
       - "./pypistats/:/app/pypistats/"
       - "./migrations/:/app/migrations/"

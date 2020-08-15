@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pypistatsorg"
-version = "1"
+version = "5"
 description = "Download counts dashboard for python packages"
 authors = ["Flynn <crf204@gmail.com>"]
 
@@ -20,6 +20,7 @@ psycopg2-binary = "^2.8"
 redis = "^3.3"
 flask-limiter = "^1.2.1"
 flower = "^0.9.5"
+flask-httpauth = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"

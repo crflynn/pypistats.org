@@ -9,7 +9,7 @@ from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
 from psycopg2.extras import execute_values
 
-from pypistats.run import celery
+from pypistats.extensions import celery
 
 # Mirrors to disregard when considering downloads
 MIRRORS = ("bandersnatch", "z3c.pypimirror", "Artifactory", "devpi")
@@ -26,7 +26,7 @@ MAX_RECORD_AGE = 180
 
 def get_google_credentials():
     """Obtain the Google credentials object explicitly."""
-    private_key = os.environ["GOOGLE_PRIVATE_KEY"]
+    private_key = os.environ["GOOGLE_PRIVATE_KEY"].replace('"', "").replace("\\n", "\n")
     private_key_id = os.environ["GOOGLE_PRIVATE_KEY_ID"]
     signer = RSASigner.from_string(key=private_key, key_id=private_key_id)
 
@@ -44,7 +44,7 @@ def get_google_credentials():
     return credentials
 
 
-def get_daily_download_stats(env="dev", date=None):
+def get_daily_download_stats(date):
     """Get daily download stats for pypi packages from BigQuery."""
     start = time.time()
 
@@ -71,15 +71,15 @@ def get_daily_download_stats(env="dev", date=None):
             data[row["category_label"]] = []
         data[row["category_label"]].append([date, row["package"], row["category"], row["downloads"]])
 
-    results = update_db(data, env, date)
+    results = update_db(data, date)
     print("Elapsed: " + str(time.time() - start))
     results["elapsed"] = time.time() - start
     return results
 
 
-def update_db(data, env="dev", date=None):
+def update_db(data, date=None):
     """Update the db with new data by table."""
-    connection, cursor = get_connection_cursor(env)
+    connection, cursor = get_connection_cursor()
 
     success = {}
     for category_label, rows in data.items():
@@ -133,7 +133,7 @@ def update_table(connection, cursor, table, rows, date):
         return False
 
 
-def update_all_package_stats(env="dev", date=None):
+def update_all_package_stats(date=None):
     """Update stats for __all__ packages."""
     print("__all__")
     start = time.time()
@@ -141,7 +141,7 @@ def update_all_package_stats(env="dev", date=None):
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    connection, cursor = get_connection_cursor(env)
+    connection, cursor = get_connection_cursor()
 
     success = {}
     for table in PSQL_TABLES:
@@ -170,7 +170,7 @@ def update_all_package_stats(env="dev", date=None):
     return success
 
 
-def update_recent_stats(env="dev", date=None):
+def update_recent_stats(date=None):
     """Update daily, weekly, monthly stats for all packages."""
     print("recent")
     start = time.time()
@@ -178,7 +178,7 @@ def update_recent_stats(env="dev", date=None):
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    connection, cursor = get_connection_cursor(env)
+    connection, cursor = get_connection_cursor()
 
     downloads_table = "overall"
     recent_table = "recent"
@@ -222,7 +222,7 @@ def update_recent_stats(env="dev", date=None):
     return success
 
 
-def get_connection_cursor(env):
+def get_connection_cursor():
     """Get a db connection cursor."""
     connection = psycopg2.connect(
         dbname=os.environ["POSTGRESQL_DBNAME"],
@@ -236,7 +236,7 @@ def get_connection_cursor(env):
     return connection, cursor
 
 
-def purge_old_data(env="dev", date=None):
+def purge_old_data(date=None):
     """Purge old data records."""
     print("Purge")
     age = MAX_RECORD_AGE
@@ -245,7 +245,7 @@ def purge_old_data(env="dev", date=None):
     if date is None:
         date = str(datetime.date.today() - datetime.timedelta(days=1))
 
-    connection, cursor = get_connection_cursor(env)
+    connection, cursor = get_connection_cursor()
 
     date = datetime.datetime.strptime(date, "%Y-%m-%d")
     purge_date = date - datetime.timedelta(days=age)
@@ -268,9 +268,9 @@ def purge_old_data(env="dev", date=None):
     return success
 
 
-def vacuum_analyze(env="dev"):
+def vacuum_analyze():
     """Vacuum and analyze the db."""
-    connection, cursor = get_connection_cursor(env)
+    connection, cursor = get_connection_cursor()
     connection.set_isolation_level(0)
 
     results = {}
@@ -372,26 +372,34 @@ def get_query(date):
 
 
 @celery.task
-def etl():
+def etl(date=None, purge=True):
     """Perform the stats download."""
-    env = os.environ.get("ENV")
-    date = str(datetime.date.today() - datetime.timedelta(days=1))
+    if date is None:
+        date = str(datetime.date.today() - datetime.timedelta(days=1))
     results = dict()
-    results["purge"] = purge_old_data(env, date)
-    results["downloads"] = get_daily_download_stats(env, date)
-    results["__all__"] = update_all_package_stats(env, date)
-    results["recent"] = update_recent_stats(env, date)
-    results["cleanup"] = vacuum_analyze(env)
+    results["downloads"] = get_daily_download_stats(date)
+    results["__all__"] = update_all_package_stats(date)
+    results["recent"] = update_recent_stats()
+    results["cleanup"] = vacuum_analyze()
+    if purge:
+        results["purge"] = purge_old_data(date)
     return results
 
 
+@celery.task
+def example(thing):
+    print(thing)
+    print("Sleeping")
+    time.sleep(10)
+    print("done")
+
+
 if __name__ == "__main__":
-    date = "2020-01-09"
-    env = "prod"
-    print(date, env)
-    # print(purge_old_data(env, date))
-    # vacuum_analyze(env)
-    print(get_daily_download_stats(env, date))
-    print(update_all_package_stats(env, date))
-    # print(update_recent_stats(env, date))
+    run_date = "2020-01-09"
+    print(run_date)
+    # print(purge_old_data(run_date))
+    # vacuum_analyze()
+    print(get_daily_download_stats(run_date))
+    print(update_all_package_stats(run_date))
+    # print(update_recent_stats(run_date))
     # vacuum_analyze(env)

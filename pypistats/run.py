@@ -8,7 +8,6 @@ from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from pypistats.application import create_app
-from pypistats.application import create_celery
 from pypistats.config import configs
 from pypistats.models.user import User
 
@@ -20,8 +19,6 @@ app = create_app(configs[env])
 # Rate limiting per IP/worker
 app.wsgi_app = ProxyFix(app.wsgi_app)
 limiter = Limiter(app, key_func=get_remote_address, application_limits=["5 per second", "30 per minute"])
-
-celery = create_celery(app)
 
 app.logger.info(f"Environment: {env}")
 

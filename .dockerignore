@@ -36,3 +36,6 @@ dump.rdb
 
 # secrets
 *.env
+.env.sample
+
+.gitignore
