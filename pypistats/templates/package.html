@@ -46,9 +46,17 @@
             {{ metadata['info']['version'] }}
             <br>
             {% if metadata['requires'] %}
-                Requires:
+                Required dependencies:
                 {% for required in metadata['requires'] %}
                     <a href="{{ url_for('general.package_page', package=required.lower()) }}">{{ required.lower() }}</a>
+                    {% if not loop.last %}|{% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if metadata['optional'] %}
+                <br>
+                Optional dependencies:
+                {% for optional in metadata['optional'] %}
+                    <a href="{{ url_for('general.package_page', package=optional.lower()) }}">{{ optional.lower() }}</a>
                     {% if not loop.last %}|{% endif %}
                 {% endfor %}
             {% endif %}
