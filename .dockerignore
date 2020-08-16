@@ -1,22 +1,24 @@
 # project
 .git
-.gitignore
+.gitignoreold
 .dockerignore
+.tool-versions
+docker-compose.yml
+envs/
+.venv/
+scripts/
+kubernetes/
+pypistats.egg-info/
 Dockerfile
+Makefile
 README.rst
-docs/
-migrations/
-tests/
 
 # mac osx
-.DS_Store
+**/.DS_Store
 
 # python bytecode
 *.py[cod]
-__pycache__
-
-# ignore
-ignore/
+**/__pycache__/
 
 # celery
 celerybeat-schedule
@@ -27,5 +29,13 @@ dump.rdb
 
 # Elastic Beanstalk Files
 .elasticbeanstalk
-.git
+.ebignore
+
+# intellij
+.idea/
+
+# secrets
+*.env
+.env.sample
+
 .gitignore

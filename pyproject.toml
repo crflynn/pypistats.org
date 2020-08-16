@@ -1,0 +1,63 @@
+[tool.poetry]
+name = "pypistatsorg"
+version = "6"
+description = "Download counts dashboard for python packages"
+authors = ["Flynn <crf204@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+google-cloud-bigquery = "^1.17"
+flask = "^1.1"
+github-flask = "^3.2"
+flask-sqlalchemy = "^2.4"
+flask-migrate = "^2.5"
+flask-login = "^0.4.1"
+flask-wtf = "^0.14.2"
+gunicorn = "^19.9"
+requests = "^2.22"
+celery = "^4.3"
+psycopg2-binary = "^2.8"
+redis = "^3.3"
+flask-limiter = "^1.2.1"
+flower = "^0.9.5"
+flask-httpauth = "^4.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^19.10b0"
+isort = "^5.3"
+
+[tool.black]
+line-length = 120
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.circleci
+    | \.git
+    | \.github
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+force_single_line = true
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"

@@ -60,9 +60,11 @@
         </p>
 
     </header>
+
     <section>
         {% block body %}{% endblock %}
     </section>
+
     <footer>
         <p>
             <a href="{{ url_for('api.api') }}">API</a>
@@ -71,7 +73,6 @@
             <br>
             <a href="{{ url_for('general.faqs') }}">FAQs</a>
             <br>
-        </p>
         </p>
     </footer>
 </div>

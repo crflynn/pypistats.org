@@ -5,7 +5,6 @@ Revises: ${down_revision | comma,n}
 Create Date: ${create_date}
 
 """
-# flake8: noqa
 from alembic import op
 import sqlalchemy as sa
 ${imports if imports else ""}
