@@ -21,6 +21,7 @@ services:
   web:
     build:
       context: .
+    image: web
     command: webdev
     depends_on:
       - postgresql
@@ -30,8 +31,7 @@ services:
     volumes:
       - "./pypistats/:/app/pypistats/"
   beat:
-    build:
-      context: .
+    image: web
     command: beat
     depends_on:
       - redis
@@ -39,8 +39,7 @@ services:
     volumes:
       - "./pypistats/:/app/pypistats/"
   celery:
-    build:
-      context: .
+    image: web
     command: celery
     depends_on:
       - redis
@@ -49,8 +48,7 @@ services:
     volumes:
       - "./pypistats/:/app/pypistats/"
   flower:
-    build:
-      context: .
+    image: web
     command: flower
     depends_on:
       - redis
@@ -60,8 +58,7 @@ services:
     volumes:
       - "./pypistats/:/app/pypistats/"
   migrate:
-    build:
-      context: .
+    image: web
     command: migrate
     depends_on:
       - postgresql
@@ -70,8 +67,7 @@ services:
       - "./pypistats/:/app/pypistats/"
       - "./migrations/:/app/migrations/"
   seeds:
-    build:
-      context: .
+    image: web
     command: seeds
     depends_on:
       - postgresql

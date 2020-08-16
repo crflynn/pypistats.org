@@ -114,8 +114,8 @@ def package_page(package):
             if metadata["info"].get("requires_dist", None):
                 requires, optional = set(), set()
                 for dependency in metadata["info"]["requires_dist"]:
-                    package_name = re.split(r"[^0-9a-zA-Z_.-]+", dependency)[0]
-                    if "; extra ==" in package:
+                    package_name = re.split(r"[^0-9a-zA-Z_.-]+", dependency.lower())[0]
+                    if "; extra ==" in dependency:
                         optional.add(package_name)
                     else:
                         requires.add(package_name)

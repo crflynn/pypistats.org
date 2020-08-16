@@ -53,9 +53,10 @@
                 {% endfor %}
             {% endif %}
             {% if metadata['optional'] %}
+                <br>
                 Optional dependencies:
-                {% for required in metadata['optional'] %}
-                    <a href="{{ url_for('general.package_page', package=required.lower()) }}">{{ required.lower() }}</a>
+                {% for optional in metadata['optional'] %}
+                    <a href="{{ url_for('general.package_page', package=optional.lower()) }}">{{ optional.lower() }}</a>
                     {% if not loop.last %}|{% endif %}
                 {% endfor %}
             {% endif %}

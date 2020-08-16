@@ -31,6 +31,10 @@ packages = []
 for line in output.split("\n")[1:-1]:
     packages.append(line.split(" ")[0])
 
+# add some packages that have optional dependencies
+packages.append("apache-airflow")
+packages.append("databricks-dbapi")
+
 logging.info(packages)
 
 # take the last 120 days
