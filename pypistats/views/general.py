@@ -112,10 +112,15 @@ def package_page(package):
         try:
             metadata = requests.get(f"https://pypi.python.org/pypi/{package}/json", timeout=5).json()
             if metadata["info"].get("requires_dist", None):
-                requires = set()
-                for required in metadata["info"]["requires_dist"]:
-                    requires.add(re.split(r"[^0-9a-zA-Z_.-]+", required)[0])
-                metadata["requires"] = sorted(list(requires))
+                requires, optional = set(), set()
+                for dependency in metadata["info"]["requires_dist"]:
+                    package_name = re.split(r"[^0-9a-zA-Z_.-]+", dependency)[0]
+                    if "; extra ==" in package:
+                        optional.add(package_name)
+                    else:
+                        requires.add(package_name)
+                metadata["requires"] = sorted(requires)
+                metadata["optional"] = sorted(optional)
         except Exception:
             pass
 
