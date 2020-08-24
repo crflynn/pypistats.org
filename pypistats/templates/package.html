@@ -67,7 +67,7 @@ Downloads last week:
 Downloads last month:
 {{ "{:,.0f}".format(recent['month']) }}
 <br>
-<input type="checkbox" name="smoothing" value="smoothing"> 7-day smoothing
+<input type="checkbox" id="smoothing" {{ 'checked' if metadata['use_smoothing'] else ''}} onclick="return setSmoothing();"> 7-day smoothing
 </p>
     <script>
 
@@ -95,5 +95,14 @@ Downloads last month:
                 }
             };
         })();
+
+        function setSmoothing() {
+            if (document.getElementById('smoothing').checked) {
+                window.location='{{ url_for('general.package_page', package=package) }}?smooth=true';
+            } else {
+                window.location='{{ url_for('general.package_page', package=package) }}';
+            }
+            return false;
+        }
     </script>
 {% endblock %}

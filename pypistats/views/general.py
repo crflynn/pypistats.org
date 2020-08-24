@@ -107,7 +107,7 @@ def package_page(package):
         recent[r.category] = r.downloads
 
     # PyPI metadata
-    metadata = None
+    metadata = dict()
     if package != "__all__":
         try:
             metadata = requests.get(f"https://pypi.python.org/pypi/{package}/json", timeout=5).json()
@@ -134,7 +134,7 @@ def package_page(package):
         else:
             metrics = ["downloads", "percentages"]
 
-        use_smoothing = 'smoothing' in request.form.getlist('smoothing')
+        use_smoothing = metadata['use_smoothing'] = request.args.get('smooth', None) is not None
         for metric in metrics:
             model_data.append({
                 "metric": metric,
@@ -197,12 +197,11 @@ def smooth_data(data, window=7):
         zip(data["x"], data["y"]), key=lambda pair: pair[0])])
     # Smooth data on a rolling window
     smoothed_data = deepcopy(data)
+    smoothed_data["y"] = list(smoothed_data["y"])
     for i in range(len(data["y"])):
-        window_data = []
         window_start = max(0, i - window // 2)
-        window_end = min(len(data) - 1, i + window // 2)
-        for j in range(window_start, window_end + 1):
-            window_data.append(data["y"][j])
+        window_end = min(len(data["y"]), i + window // 2 + 1)
+        window_data = data["y"][window_start:window_end]
         smoothed_data["y"][i] = sum(window_data) / len(window_data)
     return smoothed_data
 
