@@ -270,54 +270,22 @@ def get_download_data(records, use_smoothing=False):
 
 def get_proportion_data(records, use_smoothing=False):
     """Organize the data for the fill plots."""
-    data = defaultdict(lambda: {"x": [], "y": [], "text": []})
+    # Get the absolute numbers as a starting point, to handle fills etc.
+    # Note that this means we smooth *then* calculate proportions, which
+    # is the correct order to avoid inflating random noise.
+    data = get_download_data(records, use_smoothing=use_smoothing)
 
-    date_categories = defaultdict(lambda: 0)
-    all_categories = []
+    # Calculate the per-day sum of all y-values to divide by.
+    all_ys = [category_values["y"] for category_values in data.values()]
+    totals = [sum(chunk) or 1 for chunk in zip(*all_ys)]
 
-    prev_date = records[0].date
-
-    for record in records:
-        if record.category not in all_categories:
-            all_categories.append(record.category)
-
-    all_categories = sorted(all_categories)
-    for category in all_categories:
-        data[category]  # set the dict value (keeps it ordered)
-
-    for record in records:
-        if record.date != prev_date:
-
-            total = sum(date_categories.values()) / 100
-            for category in all_categories:
-                data[category]["x"].append(str(prev_date))
-                value = date_categories[category] / total
-                data[category]["y"].append(value)
-                data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
-
-            date_categories = defaultdict(lambda: 0)
-            prev_date = record.date
-
-        # Track categories for this date
-        date_categories[record.category] = record.downloads
-    else:
-        # Fill in missing final date with zeros
-        total = sum(date_categories.values()) / 100
-        for category in all_categories:
-            if category not in date_categories:
-                data[category]["x"].append(str(records[-1].date))
-                data[category]["y"].append(0)
-                data[category]["text"].append("{0:.2f}%".format(0) + " = {:,}".format(0))
-            else:
-                data[category]["x"].append(str(records[-1].date))
-                value = date_categories[category] / total
-                data[category]["y"].append(value)
-                data[category]["text"].append("{0:.2f}%".format(value) + " = {:,}".format(date_categories[category]))
-
-    if use_smoothing:
-        # Smooth data using a 7-day window
-        for category in all_categories:
-            data[category] = smooth_data(data[category])
+    # and finally divide each category by totals and add detailed labels
+    for category_values in data.values():
+        ys = category_values["y"]
+        category_values["y"] = [y / t for y, t in zip(ys, totals)]
+        category_values["text"] = [
+            "{:.2f}% = {:,}".format(p, a) for p, a in zip(ys, category_values["y"])
+        ]
 
     return data
 
