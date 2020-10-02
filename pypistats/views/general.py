@@ -200,13 +200,11 @@ def smooth_data(data, window=7):
     # Ensure data is sorted by date
     data["x"], data["y"] = zip(*[(x, y) for x, y in sorted(
         zip(data["x"], data["y"]), key=lambda pair: pair[0])])
-    # Smooth data on a rolling window
+    # Smooth data with a trailing window, so recent days are as accurate as possible
     smoothed_data = deepcopy(data)
     smoothed_data["y"] = list(smoothed_data["y"])
-    for i in range(len(data["y"])):
-        window_start = max(0, i - window // 2)
-        window_end = min(len(data["y"]), i + window // 2 + 1)
-        window_data = data["y"][window_start:window_end]
+    for i in range(window, len(data["y"])):
+        window_data = data["y"][max(0, i - window):i]
         smoothed_data["y"][i] = sum(window_data) / len(window_data)
     return smoothed_data
 
