@@ -297,10 +297,13 @@ def get_query(date):
         details.python AS python_version,
         details.system.name AS system
       FROM
-        `the-psf.pypi.downloads{date.replace("-", "")}`
+        `the-psf.pypi.file_downloads`
       WHERE
-        REGEXP_CONTAINS(details.python,r'^[0-9]\.[0-9]+.{{0,}}$') OR 
-        details.python IS NULL )
+        DATE(timestamp) = '{date}'
+      AND
+        (REGEXP_CONTAINS(details.python,r'^[0-9]\.[0-9]+.{{0,}}$') OR 
+        details.python IS NULL)
+      )
     SELECT
       package,
       'python_major' AS category_label,
