@@ -26,8 +26,8 @@ deploy:
 
 # port forward flower
 pfflower:
-	open http://localhost:7777 && kubectl get pods -n pypistats | grep flower | awk '{print $$1}' | xargs -I % kubectl port-forward % 7777:5555
+	open http://localhost:7777 && kubectl get pods -n pypistats | grep flower | awk '{print $$1}' | xargs -I % kubectl port-forward -n pypistats % 7777:5555
 
 # port forward web
 pfweb:
-	open http://localhost:7000 && kubectl get pods -n pypistats | grep web | awk '{print $$1}' | xargs -I % kubectl port-forward % 7000:5000
+	open http://localhost:7000 && kubectl get pods -n pypistats | grep web | awk '{print $$1}' | xargs -I % kubectl port-forward -n pypistats % 7000:5000

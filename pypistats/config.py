@@ -21,6 +21,7 @@ class Config:
 
     APP_DIR = os.path.abspath(os.path.dirname(__file__))
     CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL"),)
+    BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 86400}
     CELERY_IMPORTS = "pypistats.tasks.pypi"
     CELERYBEAT_SCHEDULE = {
         "update_db": {"task": "pypistats.tasks.pypi.etl", "schedule": crontab(minute=0, hour=1)}  # 1am UTC
