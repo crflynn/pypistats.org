@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pypistatsorg"
-version = "9"
+version = "10"
 description = "Download counts dashboard for python packages"
 authors = ["Flynn <crf204@gmail.com>"]
 
