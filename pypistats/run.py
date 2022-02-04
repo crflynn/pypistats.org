@@ -19,7 +19,7 @@ env = os.environ.get("ENV", "development")
 app = create_app(configs[env])
 
 # Rate limiting per IP/worker
-app.wsgi_app = ProxyFix(app.wsgi_app)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2)
 limiter = Limiter(app, key_func=get_remote_address, application_limits=["5 per second", "30 per minute"])
 
 app.logger.info(f"Environment: {env}")
