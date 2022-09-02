@@ -1,6 +1,7 @@
 """PyPIStats application."""
 from celery import Task
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
 
 from pypistats import views
 from pypistats.config import DevConfig
@@ -12,7 +13,10 @@ from pypistats.extensions import migrate
 
 def create_app(config_object=DevConfig):
     """Create the application."""
+    # OpenRefactory Warning: The 'Flask' method creates a Flask app
+    # without Cross-Site Request Forgery (CSRF) protection.
     app = Flask(__name__.split(".")[0])
+    CSRFProtect(app)
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)
