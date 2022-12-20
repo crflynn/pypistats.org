@@ -47,7 +47,9 @@ def api_downloads_recent(package):
     else:
         abort(404)
 
-    return jsonify(response)
+    response = jsonify(response)
+    response.headers["access-control-allow-origin"] = "*"
+    return response
 
 
 @blueprint.route("/packages/<package>/overall")
@@ -82,7 +84,9 @@ def api_downloads_overall(package):
     else:
         abort(404)
 
-    return jsonify(response)
+    response = jsonify(response)
+    response.headers["access-control-allow-origin"] = "*"
+    return response
 
 
 @blueprint.route("/packages/<package>/python_major")
@@ -120,7 +124,9 @@ def generic_downloads(model, package, arg, name):
     else:
         abort(404)
 
-    return jsonify(response)
+    response = jsonify(response)
+    response.headers["access-control-allow-origin"] = "*"
+    return response
 
 
 # TODO
