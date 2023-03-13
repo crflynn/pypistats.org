@@ -16,6 +16,13 @@ from pypistats.models.download import SystemDownloadCount
 blueprint = Blueprint("api", __name__, url_prefix="/api")
 
 
+def jsonify_with_cors_headers(response):
+    """JSON-ify a response and add CORS headers"""
+    response_jsonified = jsonify(response)
+    response_jsonified.headers["access-control-allow-origin"] = "*"
+    return response_jsonified
+
+
 @blueprint.route("/")
 def api():
     """Get API documentation."""
@@ -47,7 +54,7 @@ def api_downloads_recent(package):
     else:
         abort(404)
 
-    return jsonify(response)
+    return jsonify_with_cors_headers(response)
 
 
 @blueprint.route("/packages/<package>/overall")
@@ -82,7 +89,7 @@ def api_downloads_overall(package):
     else:
         abort(404)
 
-    return jsonify(response)
+    return jsonify_with_cors_headers(response)
 
 
 @blueprint.route("/packages/<package>/python_major")
@@ -120,7 +127,7 @@ def generic_downloads(model, package, arg, name):
     else:
         abort(404)
 
-    return jsonify(response)
+    return jsonify_with_cors_headers(response)
 
 
 # TODO
