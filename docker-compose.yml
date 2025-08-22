@@ -1,18 +1,15 @@
 x-envs: &envs
+  env_file: .env
   environment:
     - FLASK_APP=pypistats/run.py
     - FLASK_ENV=development
     - FLASK_DEBUG=1
-    - POSTGRESQL_HOST=postgresql
-    - POSTGRESQL_PORT=5432
-    - POSTGRESQL_USERNAME=admin
-    - POSTGRESQL_PASSWORD=root
-    - POSTGRESQL_DBNAME=pypistats
-    - CELERY_BROKER_URL=redis://redis
-    - BASIC_AUTH_USER=user
-    - BASIC_AUTH_PASSWORD=password
-
-version: "3.4"
+    - DATABASE_URL=${DATABASE_URL:-postgresql://admin:root@postgresql:5432/pypistats}
+    - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+    - BASIC_AUTH_USER=${BASIC_AUTH_USER:-user}
+    - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:-password}
+    - PYPISTATS_SECRET=${PYPISTATS_SECRET:-dev-secret-key}
+    - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON:-}
 
 volumes:
   pgdata: {}
@@ -21,15 +18,17 @@ services:
   web:
     build:
       context: .
+      args:
+        DEVEL: "yes"
     image: web
     command: webdev
     depends_on:
       - postgresql
     <<: *envs
     ports:
-      - "5000:5000"
+      - "8000:5000"
     volumes:
-      - "./pypistats/:/app/pypistats/"
+      - "./:/app/"
   beat:
     image: web
     command: beat
@@ -37,7 +36,7 @@ services:
       - redis
     <<: *envs
     volumes:
-      - "./pypistats/:/app/pypistats/"
+      - "./:/app/"
   celery:
     image: web
     command: celery
@@ -46,7 +45,7 @@ services:
       - postgresql
     <<: *envs
     volumes:
-      - "./pypistats/:/app/pypistats/"
+      - "./:/app/"
   flower:
     image: web
     command: flower
@@ -56,7 +55,7 @@ services:
     ports:
       - "5555:5555"
     volumes:
-      - "./pypistats/:/app/pypistats/"
+      - "./:/app/"
   migrate:
     image: web
     command: migrate
@@ -64,8 +63,7 @@ services:
       - postgresql
     <<: *envs
     volumes:
-      - "./pypistats/:/app/pypistats/"
-      - "./migrations/:/app/migrations/"
+      - "./:/app/"
   seeds:
     image: web
     command: seeds
@@ -74,14 +72,13 @@ services:
       - migrate
     <<: *envs
     volumes:
-      - "./pypistats/:/app/pypistats/"
-      - "./migrations/:/app/migrations/"
+      - "./:/app/"
   redis:
-    image: "redis:5.0.7-alpine"
+    image: "redis:7-alpine"
     ports:
       - "6379:6379"
   postgresql:
-    image: "postgres:12"
+    image: "postgres:16"
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root

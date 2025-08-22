@@ -1,4 +1,5 @@
 """General pages."""
+
 import datetime
 import re
 from collections import defaultdict
@@ -46,8 +47,10 @@ def index():
 
 
 @blueprint.route("/health")
+@blueprint.route("/_health/")
 def health():
-    return "OK"
+    """Health check endpoint."""
+    return "OK", 200
 
 
 @blueprint.route("/search/<package>", methods=("GET", "POST"))
@@ -211,7 +214,6 @@ def get_download_data(records):
     for record in records:
         # Fill missing intermediate dates with zeros
         if record.date != prev_date:
-
             for category in all_categories:
                 if category not in date_categories:
                     data[category]["x"].append(str(prev_date))
@@ -263,7 +265,6 @@ def get_proportion_data(records):
 
     for record in records:
         if record.date != prev_date:
-
             total = sum(date_categories.values()) / 100
             for category in all_categories:
                 data[category]["x"].append(str(prev_date))

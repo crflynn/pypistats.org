@@ -1,7 +1,12 @@
 # format everything
 fmt:
-	poetry run isort .
-	poetry run black .
+	docker-compose run --rm web isort .
+	docker-compose run --rm web black .
+
+# check formatting without modifying files
+check-fmt:
+	docker-compose run --rm web isort . --check-only
+	docker-compose run --rm web black . --check
 
 # launch the application in docker-compose
 .PHONY: pypistats
@@ -18,11 +23,13 @@ cleanup:
 setup:
 	brew install asdf || true
 	asdf install
-	poetry install
+	pip install -r requirements-dev.txt
 
-# deploy to gke
-deploy:
-	sh kubernetes/deploy.sh
+# update requirements files
+update-deps:
+	pip-compile --generate-hashes --resolver=backtracking requirements.in -o requirements.txt
+	pip-compile --generate-hashes --resolver=backtracking requirements-dev.in -o requirements-dev.txt
+
 
 # port forward flower
 pfflower:
