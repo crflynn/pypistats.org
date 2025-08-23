@@ -142,8 +142,15 @@ def package_page(package):
         else:
             metrics = ["downloads", "percentages"]
 
+        if model == PythonMinorDownloadCount:
+            category_key = python_minor_key
+        else:
+            category_key = None
+
         for metric in metrics:
-            model_data.append({"metric": metric, "name": model.__tablename__, "data": data_function[metric](records)})
+            model_data.append(
+                {"metric": metric, "name": model.__tablename__, "data": data_function[metric](records, category_key)}
+            )
 
     # Build the plots
     plots = []
@@ -194,7 +201,16 @@ def package_page(package):
     return render_template("package.html", package=package, plots=plots, metadata=metadata, recent=recent, user=g.user)
 
 
-def get_download_data(records):
+def python_minor_key(version):
+    try:
+        key = [""] + [int(p) for p in version.split(".")]
+    except ValueError:
+        key = [version]
+
+    return key
+
+
+def get_download_data(records, category_key=None):
     """Organize the data for the absolute plots."""
     data = defaultdict(lambda: {"x": [], "y": []})
 
@@ -207,7 +223,7 @@ def get_download_data(records):
         if record.category not in all_categories:
             all_categories.append(record.category)
 
-    all_categories = sorted(all_categories)
+    all_categories = sorted(all_categories, key=category_key)
     for category in all_categories:
         data[category]  # set the dict value (keeps it ordered)
 
@@ -246,7 +262,7 @@ def get_download_data(records):
     return data
 
 
-def get_proportion_data(records):
+def get_proportion_data(records, category_key=None):
     """Organize the data for the fill plots."""
     data = defaultdict(lambda: {"x": [], "y": [], "text": []})
 
@@ -259,7 +275,7 @@ def get_proportion_data(records):
         if record.category not in all_categories:
             all_categories.append(record.category)
 
-    all_categories = sorted(all_categories)
+    all_categories = sorted(all_categories, key=category_key)
     for category in all_categories:
         data[category]  # set the dict value (keeps it ordered)
 
